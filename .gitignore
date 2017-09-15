@@ -127,4 +127,7 @@ ENV/
 hs_err_pid*
 
 
-
+#Directories
+build/
+nbproject/private
+dist/
