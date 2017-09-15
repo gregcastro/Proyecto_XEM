@@ -53,29 +53,41 @@ data = json.loads('{"accion": {"cambiar_version_claymore": false,"reiniciar_clay
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\nprocess_printer.exe -c "EthDcrMiner64.exe '
 myIP = ''
 # web_server = 'http://172.16.10.103:8081/xem'
-web_server = 'http://192.168.0.100:8081'
+web_server = 'http://192.168.2.41:8081'
 
 def web_get_request_JSON():
     global data
-    #r = requests.get(web_server + "/rig")
-    r = requests.get('http://192.168.0.100:8081' + '/rig')
+
+    # Find rig_uuid 
+    if os.path.exists(wDir + r"\rig_uuid.txt"):
+        print("si existe el path")
+        file = open(wDir + r"\rig_uuid.txt", "r") 
+        rig_uuid = file.read()
+        print(rig_uuid)
+
+        #r = requests.get(web_server + "/rig")
+        r = requests.get(web_server + '/action/by_rig/' + rig_uuid)
+
+        ##################
+        print(r.status_code)
+        # print(r.headers['content-type'])
+        # print(r.json())
+        ##################
+
+        #hacer r.content da TypeError: Can't convert 'bytes' obj to str implicitly
+        # data = json.loads(r.content)
+
+        #linea agregada por gcastro
+        data = r.json()
+
+        #Print de gcastro
+        print("data = ")
+        print(data)
+
+    else:
+        print('Error: No existe el path' + wDir + r"\rig_uuid.txt")
+
     
-    ##################
-    print(r.status_code)
-    # print(r.headers['content-type'])
-    # print(r.json())
-    ##################
-
-    #hacer r.content da TypeError: Can't convert 'bytes' obj to str implicitly
-    # data = json.loads(r.content)
-
-    #linea agregada por gcastro
-    data = r.json()
-
-    #Print de gcastro
-    print("data = ")
-    print(data)
-
 def obtener_myIP():
     global myIP
     hostname = socket.gethostname()
@@ -149,7 +161,7 @@ def descargar_nueva_version_claymore():
                 with ZipFile(BytesIO(zipresp.read())) as zipfile:
                     zipfile.extractall(r"C:\Users\Miner\Miners\Claymore")
                 zipfile.close()
-#                src = r"C:\Users\Miner\Miners\Claymore\winpty_cygwin_process_printer"
+                #src = r"C:\Users\Miner\Miners\Claymore\winpty_cygwin_process_printer"
                 src = os.path.dirname(os.path.realpath(__file__)) + r"\winpty_cygwin_process_printer"
                 src_files = os.listdir(src)
                 for file_name in src_files:
