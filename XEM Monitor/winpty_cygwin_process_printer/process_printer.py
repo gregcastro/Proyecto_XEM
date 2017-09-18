@@ -9,13 +9,15 @@ import datetime
 import socket
 import requests
 import optparse
+import uuid
+import os.path
 from multiprocessing import Queue
 
 
 # Configuration variables
 seconds_between_requests = 1
 # web_server_address = 'http://192.168.0.102:8081/xem'
-web_server_address = 'http://192.168.0.100:8081'
+web_server_address = 'http://192.168.2.41:8081'
 # payload informatcion
 user_email = "alfonsof@gmail.com"
 rig_name = "Min02"
@@ -44,6 +46,7 @@ if (options.rig_reset_today != None):
 gpu_info = {
 "rig_email":"None",
 "rig_name":"None",
+"rig_uuid":"None",
 "rig_gpu_second_coin":"None",
 "rig_lan_ip":"None",
 "rig_claymore_version":"None",
@@ -226,14 +229,35 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             gpu_info["rig_time_up"] = "{}".format(datetime.timedelta(seconds=int(time.time() - start_time)))
 
 
-            GPUInfoETH_json = gpu_info["rig_gpu_info_eth"]
-            GPUInfoSecondCoin_json = gpu_info["rig_gpu_info_second_coin"]
+            
 
-            print('\n\n\n##################################')
+            # If the rig_uuid exists then a use it. If not, I create it 
+            if os.path.exists("rig_uuid.txt"):
+                file = open("rig_uuid.txt", "r") 
+                rig_uuid = file.read()
+                print(rig_uuid)
+            else:
+                # Generate UUID for the RIG
+                rig_uuid = str( uuid.uuid4() )
+                # print("rig_uuid = " + rig_uuid)
+
+                # Create a File and Save the rig_uuid
+                file = open("rig_uuid.txt","w") 
+                file.write(rig_uuid) 
+                file.close() 
+
+            gpu_info["rig_uuid"] = rig_uuid
+
+
+            # Esto ya no lo estoy necesitando
+            # GPUInfoETH_json = gpu_info["rig_gpu_info_eth"]
+            # GPUInfoSecondCoin_json = gpu_info["rig_gpu_info_second_coin"]
+
+            # print('\n\n\n##################################')
             # print(GPUInfoETH_json)
             # print(GPUInfoSecondCoin_json)
-            print(gpu_info)
-            print('##################################\n\n\n')
+            # print(gpu_info)
+            # print('##################################\n\n\n')
 
             # Send request to server
             try:
