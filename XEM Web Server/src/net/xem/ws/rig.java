@@ -1,18 +1,21 @@
 package net.xem.ws;
 
 //import javax.ws.rs.Consumes;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.json.JSONException;
 
 
 @Path("rig")
+@Produces("application/json")
 public class rig {
 	
 	@GET
@@ -47,9 +50,13 @@ public class rig {
 	
 	@POST 
 	@Path("/")
-	public static String create(final MultivaluedMap<String, String> formParams) throws JSONException{
-		
+        @Consumes("application/json")
+//	public static String create(final MultivaluedMap<String, String> formParams) throws JSONException{
+        public static String create(String formParams) throws JSONException{
 		String response = "";
+                
+//                System.out.println("formParams = " + formParams);
+//                response = formParams;
 		response = net.xem.business.rig.Create(formParams);
 		
 		return response;

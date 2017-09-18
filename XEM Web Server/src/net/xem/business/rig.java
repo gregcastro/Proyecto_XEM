@@ -186,19 +186,20 @@ public class rig {
 	}
 
 	@SuppressWarnings("finally")
-	public static String Create(final MultivaluedMap<String, String> formParams) throws JSONException {
-		String a = formParams.toString();
+//	public static String Create(final MultivaluedMap<String, String> formParams) throws JSONException {
+	public static String Create(String formParams) throws JSONException {
+//		String a = formParams.toString();
+		String a = formParams;
 		String response = "";
 
-                a = a.substring(11,a.length() -2);
-		a = a.replaceAll("'","\"");
+//                a = a.substring(11,a.length() -2);
+//		a = a.replaceAll("'","\"");
 		
                 System.out.println("a = " + a);
-
 		List<?> _Rig = null;
 		List<?> columns = null;
 		JSONObject gpu_info = new JSONObject();
-				
+			         	
 		try {
 			gpu_info = new JSONObject(a);
 		} catch (JSONException e1) {
@@ -206,47 +207,60 @@ public class rig {
 			e1.printStackTrace();
 		}
 		
-//		System.out.println(gpu_info['rig_name']);
-
-		String rig_uuid = UUID.randomUUID().toString();
+                String rig_uuid = gpu_info.getString("rig_uuid");
 		String rig_name = gpu_info.getString("rig_name");
+                
+//		String user_email = gpu_info.getString("rig_email");
 		String user_email = gpu_info.getString("user_email");
+                
 		String rig_lan_ip = gpu_info.getString("rig_lan_ip");
 		String rig_claymore_version = gpu_info.getString("rig_claymore_version");
 		String rig_time_up = gpu_info.getString("rig_time_up");
 		String rig_reset_today = gpu_info.getString("rig_reset_today");
 		String rig_claymore_reset_today = gpu_info.getString("rig_claymore_reset_today");
-		String rig_gpu_info_eth = gpu_info.getJSONArray("rig_gpu_info_eth").toString();
+                
+                
+                
+//		String rig_gpu_info_eth = gpu_info.getJSONArray("rig_gpu_info_eth").toString();
+		String rig_gpu_info_eth = gpu_info.getString("rig_gpu_info_eth");
+                
 		String rig_gpu_second_coin = gpu_info.getString("rig_gpu_second_coin");
-		String rig_gpu_info_second_coin = gpu_info.getJSONArray("rig_gpu_info_second_coin").toString();
-		String location_uuid = gpu_info.getString("location_uuid");
+		
+//                String rig_gpu_info_second_coin = gpu_info.getJSONArray("rig_gpu_info_second_coin").toString();
+                String rig_gpu_info_second_coin = gpu_info.getString("rig_gpu_info_second_coin");
+		
+                
+                String location_uuid = gpu_info.getString("location_uuid");
 		String rig_start_bat_data = "";
 		String uuid ="";
 		String rig_reseter_number = "";
-
 		try {
-
 			if (utils.get_config("dummy").equals("false")) {
-
 				String RigExist[] = { user_email, rig_name };
 				_Rig = mysql.getQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_read_by_name_and_email(?,?);",
 						RigExist);
 
 				if (_Rig.size() >= 1) {
-
+                                    System.out.println("SP_RIG_UPDATE");
 					for (int i = 0; i < _Rig.size(); i++) {
 						columns = (List<?>) _Rig.get(i);
 						uuid = columns.get(1).toString();
-						rig_reseter_number = (columns.get(15)!= null ? columns.get(15).toString() :"0");
+//                                              Por ahora no existe ese campo 15.. solo llega hasta el 14 en la BD
+//						rig_reseter_number = (columns.get(15)!= null ? columns.get(15).toString() :"0");
 					}
+//                                        Estoy dejando de un lado el rig_reseter_number
+//					String params[] = { uuid, rig_name, user_email, rig_lan_ip, rig_claymore_version, rig_time_up, rig_reset_today,
+//							rig_claymore_reset_today, rig_gpu_info_eth, rig_gpu_second_coin, rig_gpu_info_second_coin, rig_start_bat_data, location_uuid,rig_reseter_number };
+//					mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+//							params);
 
-					String params[] = { uuid, rig_name, user_email, rig_lan_ip, rig_claymore_version, rig_time_up, rig_reset_today,
-							rig_claymore_reset_today, rig_gpu_info_eth, rig_gpu_second_coin, rig_gpu_info_second_coin, rig_start_bat_data, location_uuid,rig_reseter_number };
-					mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                                        String params[] = { uuid, rig_name, user_email, rig_lan_ip, rig_claymore_version, rig_time_up, rig_reset_today,
+							rig_claymore_reset_today, rig_gpu_info_eth, rig_gpu_second_coin, rig_gpu_info_second_coin, rig_start_bat_data, location_uuid};
+					mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_update(?,?,?,?,?,?,?,?,?,?,?,?,?);",
 							params);
 
 					JSONObject rig_result = new JSONObject();
-					rig_result.put("rig_uuid", rig_uuid);
+                                        rig_result.put("rig_uuid", rig_uuid);
 					rig_result.put("rig_name", rig_name);
 					rig_result.put("user_email", user_email);
 					rig_result.put("rig_lan_ip", rig_lan_ip);
@@ -265,30 +279,50 @@ public class rig {
 					response = _rig.toString();
 
 				} else {
-					String params[] = {  rig_uuid, rig_name, user_email, rig_lan_ip, rig_claymore_version, rig_time_up, rig_reset_today,
-							rig_claymore_reset_today, rig_gpu_info_eth, rig_gpu_second_coin, rig_gpu_info_second_coin, rig_start_bat_data, location_uuid };
-					mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_create(?,?,?,?,?,?,?,?,?,?,?,?,?);",
-							params);
+                                    
+                                    
+                                    String param[] = {  rig_uuid };
+                                    _Rig = mysql.getQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_read(?);", param);
+                                    if (_Rig.size() > 0) {
+                                        //Crear un JSON que explique el uuid ya existe.. que lo vuelva a intentar
+                                        //Si el programa en Python recibe este codigo, significa que debe generar nuevamente un uuid y guardarlo en su archivo
+                                        
+                                        //Creo que es mejor que cuando el programa en Python genere el uuid el pregunte si ya existe o no..
+                                        //Si lo hago de esta forma entonces puedo borrar este IF
+                                        
+                                        
+                                        JSONObject rig_result = new JSONObject();
+                                        rig_result.put("Codigo", 003);
+                                        rig_result.put("ERROR", "El rig_uuid: " + rig_uuid + " ya existe.");
+                                        response = rig_result.toString();
+                                        
+                                    } else {
+                                        String params[] = {  rig_uuid, rig_name, user_email, rig_lan_ip, rig_claymore_version, rig_time_up, rig_reset_today,
+                                                        rig_claymore_reset_today, rig_gpu_info_eth, rig_gpu_second_coin, rig_gpu_info_second_coin, rig_start_bat_data, location_uuid };
+                                        mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_create(?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                                                        params);
+                                        JSONObject rig_result = new JSONObject();
+                                        rig_result.put("rig_uuid", rig_uuid);
+                                        rig_result.put("rig_name", rig_name);
+                                        rig_result.put("user_email", user_email);
+                                        rig_result.put("rig_lan_ip", rig_lan_ip);
+                                        rig_result.put("rig_claymore_version", rig_claymore_version);
+                                        rig_result.put("rig_time_up", rig_time_up);
+                                        rig_result.put("rig_reset_today", rig_reset_today);
+                                        rig_result.put("rig_claymore_reset_today", rig_claymore_reset_today);
+                                        rig_result.put("rig_gpu_info_eth", rig_gpu_info_eth);
+                                        rig_result.put("rig_gpu_second_coin", rig_gpu_second_coin);
+                                        rig_result.put("rig_gpu_info_second_coin", rig_gpu_info_second_coin);
+                                        rig_result.put("location_uuid", location_uuid);
+                                        rig_result.put("rig_start_bat_data", rig_start_bat_data);
 
-					JSONObject rig_result = new JSONObject();
-					rig_result.put("rig_uuid", rig_uuid);
-					rig_result.put("rig_name", rig_name);
-					rig_result.put("user_email", user_email);
-					rig_result.put("rig_lan_ip", rig_lan_ip);
-					rig_result.put("rig_claymore_version", rig_claymore_version);
-					rig_result.put("rig_time_up", rig_time_up);
-					rig_result.put("rig_reset_today", rig_reset_today);
-					rig_result.put("rig_claymore_reset_today", rig_claymore_reset_today);
-					rig_result.put("rig_gpu_info_eth", rig_gpu_info_eth);
-					rig_result.put("rig_gpu_second_coin", rig_gpu_second_coin);
-					rig_result.put("rig_gpu_info_second_coin", rig_gpu_info_second_coin);
-					rig_result.put("location_uuid", location_uuid);
-					rig_result.put("rig_start_bat_data", rig_start_bat_data);
-					
-
-					JSONObject rig = new JSONObject();
-					rig.put("rig", rig_result);
-					response = rig.toString();
+                                        //Creo que esto de guardar un json dentro de otro json esta malo.. no hace falta! 
+                                        JSONObject rig = new JSONObject();
+                                        rig.put("rig", rig_result);
+                                        response = rig.toString();
+                                    }
+                                    
+                                        
 
 				}
 
@@ -298,8 +332,10 @@ public class rig {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+                        System.err.print(e);
 			response = utils.get_msg("0034", Arrays.toString(e.getStackTrace()).substring(0, 300));
 		} finally {
+                    System.out.println("response = " + response);
 			return response;
 		}
 	}
