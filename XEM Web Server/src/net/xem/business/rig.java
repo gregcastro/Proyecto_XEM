@@ -114,9 +114,10 @@ public class rig {
 
 
 				}
-				JSONObject obj_rig = new JSONObject();
-				obj_rig.put("rig", rig);
-				rig_list = obj_rig.toString();
+//				JSONObject obj_rig = new JSONObject();
+//				obj_rig.put("rig", rig);
+//				rig_list = obj_rig.toString();
+                                rig_list = rig.toString();
 			} else {
 				rig_list = "{\"rig\": [{\"rig_id\": \"123456\",\"rig_uuid\": \"ASWER123UYT657\",\"rig_datetime\": \"2017-01-01\",\"rig_type\": \"EMAIL\",\"rig_status\": \"SENT\",\"rig_from\": \"JANIO\",\"rig_to\": \"JOSE\"},{\"rig_text\": \"HI\"}]}";
 			}

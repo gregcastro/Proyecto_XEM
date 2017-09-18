@@ -237,11 +237,17 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
                 rig_uuid = file.read()
                 print(rig_uuid)
             else:
+                while True:
+                    rig_uuid = str( uuid.uuid4() )
+                    r = requests.post(web_server_address+'/rig/'+rig_uuid, data={"gpu_info":str(gpu_info)})
+                    response = r.json()
+                    if 'rig_uuid' not in response:
+                        break
+                
                 # Generate UUID for the RIG
-                rig_uuid = str( uuid.uuid4() )
-                # print("rig_uuid = " + rig_uuid)
+                # rig_uuid = str( uuid.uuid4() )
 
-                # Create a File and Save the rig_uuid
+                # # Create a File and Save the rig_uuid
                 file = open("rig_uuid.txt","w") 
                 file.write(rig_uuid) 
                 file.close() 

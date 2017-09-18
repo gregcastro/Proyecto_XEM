@@ -1,0 +1,44 @@
+{
+	"action": {
+		"action_change_claymore_version": "1",
+		"action_restart_claymore": "0",
+		"action_change_start_bat": "0",
+		"action_download_claymore_version": "0",
+	},
+	"properties": {
+     "version": "nombre de version",
+     "start_bat_data": "configuracion de claymore",
+   },
+   "rig_uuid": "all"
+}
+
+
+{
+	"action": {
+		"action_change_claymore_version": "0",
+		"action_restart_claymore": "0",
+		"action_change_start_bat": "1",
+		"action_download_claymore_version": "0",
+	},
+	"rig_uuid": "aja61ndka761j7d2"
+}
+
+
+
+
+
+# data JSON model (GET request)
+# {
+#   "action": {
+#     "action_change_claymore_version": false,
+#     "action_restart_claymore": false,
+#     "action_change_start_bat": false,
+#     "action_download_claymore_version": false,
+#     "resetear_RIG": false
+#   },
+#   "properties": {
+#     "version": "nombre de version",
+#     "start_bat_data": "configuracion de claymore",
+#     "IP_Reset": "IP de RIG a resetear"
+#   }
+# }
