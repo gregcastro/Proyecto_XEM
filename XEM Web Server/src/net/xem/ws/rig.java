@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 
 @Path("rig")
@@ -54,11 +55,11 @@ public class rig {
 //	public static String create(final MultivaluedMap<String, String> formParams) throws JSONException{
         public static String create(String formParams) throws JSONException{
 		String response = "";
-                
+                System.out.println("RIG CREATE");
 //                System.out.println("formParams = " + formParams);
 //                response = formParams;
 		response = net.xem.business.rig.Create(formParams);
-		
+		   
 		return response;
 	}
 	
