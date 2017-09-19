@@ -196,51 +196,51 @@ public class rig {
 //                a = a.substring(11,a.length() -2);
 //		a = a.replaceAll("'","\"");
 		
-                System.out.println("a = " + a);
+//                System.out.println("a = " + a);
 		List<?> _Rig = null;
 		List<?> columns = null;
 		JSONObject gpu_info = new JSONObject();
 			         	
 		try {
-			gpu_info = new JSONObject(a);
+                    gpu_info = new JSONObject(a);
+                    String aux = gpu_info.getString("gpu_info");
+                    gpu_info = new JSONObject(aux);               
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-                String rig_uuid = gpu_info.getString("rig_uuid");
-		String rig_name = gpu_info.getString("rig_name");
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+		}  
+                try {
+                    String rig_uuid = gpu_info.getString("rig_uuid");
+                    String rig_name = gpu_info.getString("rig_name");
+                    
+                    String user_email = gpu_info.getString("rig_email");
+//                    String user_email = gpu_info.getString("user_email");
+                    String rig_lan_ip = gpu_info.getString("rig_lan_ip");
+                    String rig_claymore_version = gpu_info.getString("rig_claymore_version");
+                    String rig_time_up = gpu_info.getString("rig_time_up");
+                    String rig_reset_today = gpu_info.getString("rig_reset_today");
+                    String rig_claymore_reset_today = gpu_info.getString("rig_claymore_reset_today");
+
+		String rig_gpu_info_eth = gpu_info.getJSONArray("rig_gpu_info_eth").toString();
+//                    String rig_gpu_info_eth = gpu_info.getString("rig_gpu_info_eth");
+
+                    String rig_gpu_second_coin = gpu_info.getString("rig_gpu_second_coin");
+
+                String rig_gpu_info_second_coin = gpu_info.getJSONArray("rig_gpu_info_second_coin").toString();
+//                    String rig_gpu_info_second_coin = gpu_info.getString("rig_gpu_info_second_coin");
+
+
+                    String location_uuid = gpu_info.getString("location_uuid");
+                    String rig_start_bat_data = "";
+                    String uuid ="";
+                    String rig_reseter_number = "";
                 
-//		String user_email = gpu_info.getString("rig_email");
-		String user_email = gpu_info.getString("user_email");
-                
-		String rig_lan_ip = gpu_info.getString("rig_lan_ip");
-		String rig_claymore_version = gpu_info.getString("rig_claymore_version");
-		String rig_time_up = gpu_info.getString("rig_time_up");
-		String rig_reset_today = gpu_info.getString("rig_reset_today");
-		String rig_claymore_reset_today = gpu_info.getString("rig_claymore_reset_today");
-                
-                
-                
-//		String rig_gpu_info_eth = gpu_info.getJSONArray("rig_gpu_info_eth").toString();
-		String rig_gpu_info_eth = gpu_info.getString("rig_gpu_info_eth");
-                
-		String rig_gpu_second_coin = gpu_info.getString("rig_gpu_second_coin");
-		
-//                String rig_gpu_info_second_coin = gpu_info.getJSONArray("rig_gpu_info_second_coin").toString();
-                String rig_gpu_info_second_coin = gpu_info.getString("rig_gpu_info_second_coin");
-		
-                
-                String location_uuid = gpu_info.getString("location_uuid");
-		String rig_start_bat_data = "";
-		String uuid ="";
-		String rig_reseter_number = "";
-		try {
+//                    ##################################
+                    
 			if (utils.get_config("dummy").equals("false")) {
 				String RigExist[] = { user_email, rig_name };
 				_Rig = mysql.getQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_read_by_name_and_email(?,?);",
 						RigExist);
-
 				if (_Rig.size() >= 1) {
                                     System.out.println("SP_RIG_UPDATE");
 					for (int i = 0; i < _Rig.size(); i++) {
@@ -281,7 +281,7 @@ public class rig {
 
 				} else {
                                     
-                                    
+                                    System.out.println("sp_rig_create");
                                     String param[] = {  rig_uuid };
                                     _Rig = mysql.getQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_read(?);", param);
                                     if (_Rig.size() > 0) {
@@ -321,6 +321,20 @@ public class rig {
                                         JSONObject rig = new JSONObject();
                                         rig.put("rig", rig_result);
                                         response = rig.toString();
+                                        
+                                        System.out.println("CREAR ACCION");
+                                        //Creacion de accion asociada al rig_uuid
+                                        JSONObject actionObj = new JSONObject();
+                                        actionObj.put("action_change_claymore_version", 0);
+                                        actionObj.put("action_change_start_bat", 0);
+                                        actionObj.put("action_download_claymore_version", 0);
+                                        actionObj.put("action_restart_claymore", 0);
+                                        actionObj.put("action_reset_rig", "");
+                                        actionObj.put("rig_uuid", rig_uuid);
+                                        net.xem.business.action.create(actionObj.toString());
+                                        System.out.println("FIN CREAR ACCION");
+                                        
+                                        
                                     }
                                     
                                         

@@ -1,4 +1,5 @@
 package net.xem.ws;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -7,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
+import org.json.JSONException;
 
 @Path("action")
 @Produces("application/json")
@@ -34,7 +36,7 @@ public class action {
         @GET
 	@Path("/by_rig/{rig_uuid}/")
 	public static String read_by_rig(@PathParam("rig_uuid") String rig_uuid){
-	
+                System.out.println("action/by_rig/{rig_uuid}");
 		String response = "";
 		response = net.xem.business.action.read_by_rig(rig_uuid);
 		
@@ -53,8 +55,9 @@ public class action {
         
 	@POST 
 	@Path("/")
-	public static String create(final MultivaluedMap<String, String> formParams){
-		
+        @Consumes("application/json")
+//	public static String create(final MultivaluedMap<String, String> formParams){
+	public static String create(String formParams) throws JSONException{
 		String response = "";
 		response = net.xem.business.action.create(formParams);
 		

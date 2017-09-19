@@ -1,0 +1,11 @@
+Manual de Integración:
+
++ Instalar Python Version 3.x
+
++ Instalar pyinstaller (pip install pyinstaller) Esto es solo para desarrollador
+
++ Instalar requests (pip install requests)
+
++ Instalar Microsoft Visual Studio XXXX package (En caso de que no funcione el pyinstaller)
+
++ 
