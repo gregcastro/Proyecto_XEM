@@ -36,7 +36,7 @@ public class action {
         @GET
 	@Path("/by_rig/{rig_uuid}/")
 	public static String read_by_rig(@PathParam("rig_uuid") String rig_uuid){
-                System.out.println("action/by_rig/{rig_uuid}");
+//                System.out.println("action/by_rig/{rig_uuid}");
 		String response = "";
 		response = net.xem.business.action.read_by_rig(rig_uuid);
 		
@@ -84,14 +84,6 @@ public class action {
 		return response;
 	}
         
-        @GET
-        @Path("/prueba_gcastro")
-        public static String prueba_get_method(){
-	
-		String response = "";
-		response = net.xem.business.action.prueba_get_method();		
-		return response;
-	}
         
         
         

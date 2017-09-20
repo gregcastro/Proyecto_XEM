@@ -1,6 +1,5 @@
 package net.xem.ws;
 
-//import javax.ws.rs.Consumes;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -52,12 +51,8 @@ public class rig {
 	@POST 
 	@Path("/")
         @Consumes("application/json")
-//	public static String create(final MultivaluedMap<String, String> formParams) throws JSONException{
         public static String create(String formParams) throws JSONException{
 		String response = "";
-                System.out.println("RIG CREATE");
-//                System.out.println("formParams = " + formParams);
-//                response = formParams;
 		response = net.xem.business.rig.Create(formParams);
 		   
 		return response;
