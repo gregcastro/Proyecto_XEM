@@ -16,28 +16,12 @@ from win32com.client import GetObject
 
 # data JSON model (GET request)
 # {
-#   "accion": {
-#     "cambiar_version_claymore": false,
-#     "reiniciar_claymore": false,
-#     "cambiar_start_bat": false,
-#     "descargar_nueva_version_claymore": false,
-#     "resetear_RIG": false
-#   },
-#   "propiedades": {
-#     "version": "nombre de version",
-#     "start_bat_data": "configuracion de claymore",
-#     "IP_Reset": "IP de RIG a resetear"
-#   }
-# }
-
-# data JSON model (GET request)
-# {
 #   "action": {
 #     "action_change_claymore_version": false,
 #     "action_restart_claymore": false,
 #     "action_change_start_bat": false,
 #     "action_download_claymore_version": false,
-#     "resetear_RIG": false
+#     "action_reset_rig": false
 #   },
 #   "properties": {
 #     "version": "nombre de version",
@@ -51,7 +35,6 @@ icon = r"C:\Users\Miner\Miners\Claymore\Claymore's Dual Ethereum+Decred_Siacoin_
 data = json.loads('{"accion": {"cambiar_version_claymore": false,"reiniciar_claymore": false,"cambiar_start_bat": false,"descargar_nueva_version_claymore": false,"resetear_RIG": false},"propiedades": {"version": "version1","start_bat_data": "-wd 1 -r 1 -epool stratum+tcp://eth-us.dwarfpool.com:8008 -ewal 0x67Eb849500f4bf5fd5ac7dD34E65Fa0f02Bd09d9/LETHI19/luisgermim@gmail.com -esm 0 -mode 0 -epsw x -allpools 1 -mport -3333 -dpool stratum+tcp://dcr.suprnova.cc:3252 -dwal luisgermim.LETHI19 -dpsw 1234 -tt -77 -ttdcr 80 -fanmin 80","IP_Reset": "192.168.0.190"}}')
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\nprocess_printer.exe -c "EthDcrMiner64.exe '
 myIP = ''
-# web_server = 'http://172.16.10.103:8081/xem'
 web_server = 'http://192.168.0.100:8081'
 
 def web_get_request_JSON():
@@ -84,7 +67,6 @@ def web_get_request_JSON():
     else:
         print('Error: No existe el path' + wDir + r"\rig_uuid.txt")
 
-    
 def obtener_myIP():
     global myIP
     hostname = socket.gethostname()
@@ -173,13 +155,20 @@ def descargar_nueva_version_claymore():
         # data['accion']['descargar_nueva_version_claymore'] = False
         data['action']['action_download_claymore_version'] = "0"
 
-#Aun no he modificado este
-def resetear_RIG():
+#Borrar... este es reset_rig()
+# def resetear_RIG():
+#     global client_socket
+#     if data['accion']['resetear_RIG'] == True and data['propiedades']['IP_Reset'] == myIP:
+#         client_socket.sendto(bytes("1", "utf-8"), address)
+#         print("Paquete enviado")
+#         data['accion']['resetear_RIG'] = False
+
+def reset_rig():
     global client_socket
-    if data['accion']['resetear_RIG'] == True and data['propiedades']['IP_Reset'] == myIP:
+    if data['action']['action_reset_rig'] == "1":
         client_socket.sendto(bytes("1", "utf-8"), address)
         print("Paquete enviado")
-        data['accion']['resetear_RIG'] = False
+        data['action']['action_reset_rig'] = "0"
 
 def setup_winpty_cygwin_process_printer():
     dest = "C:\\Users\\Miner\\Miners\\Claymore"
@@ -212,5 +201,6 @@ def main():
             cambiar_start_bat()
             cambiar_version_claymore()
             request_reiniciar_claymore()
+            reset_rig()
             # resetear_RIG()
 main()
