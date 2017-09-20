@@ -36,7 +36,7 @@ public class action {
         @GET
 	@Path("/by_rig/{rig_uuid}/")
 	public static String read_by_rig(@PathParam("rig_uuid") String rig_uuid){
-                System.out.println("action/by_rig/{rig_uuid}");
+//                System.out.println("action/by_rig/{rig_uuid}");
 		String response = "";
 		response = net.xem.business.action.read_by_rig(rig_uuid);
 		
