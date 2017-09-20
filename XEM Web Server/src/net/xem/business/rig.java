@@ -401,7 +401,7 @@ public class rig {
 
 			if (utils.get_config("dummy").equals("false")) {
 				String params[] = { uuid };
-				mysql.execQuery(utils.get_config("db.connstr-event"), "SPRigDelete(?);", params);
+				mysql.execQuery(utils.get_config("db.connstr-event"), "sp_rig_delete(?);", params);
 				JSONObject rig_result = new JSONObject();
 				rig_result.put("RigUUID", uuid);
 				JSONObject rig = new JSONObject();

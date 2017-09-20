@@ -84,14 +84,6 @@ public class action {
 		return response;
 	}
         
-        @GET
-        @Path("/prueba_gcastro")
-        public static String prueba_get_method(){
-	
-		String response = "";
-		response = net.xem.business.action.prueba_get_method();		
-		return response;
-	}
         
         
         

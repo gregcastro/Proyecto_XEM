@@ -211,7 +211,7 @@ public class action {
             try {
                 objParams = new JSONObject(formParams);
             } catch (JSONException ex) {
-                System.err.println("Error: al convertir JSON" + ex);
+                System.err.println("Error al convertir JSON: " + ex);
             }
             
                 String response ="";
@@ -338,56 +338,8 @@ public class action {
 	}
 
         
-        @SuppressWarnings("finally")
-	public static String prueba_get_method() {
-		String response = "";
-		List<?> rows = null;
-		List<?> columns = null;
-		String action_list = "";
-		try{
-			if (utils.get_config("dummy").equals("false")) {
-				String params_query[] = {};
-				rows = mysql.getQuery
-						(utils.get_config("db.connstr-event"),
-								"CALL sp_action_list();", params_query);
-				
-				JSONArray list_action = new JSONArray();
-				int len = rows.size();
-                                System.out.println(rows.get(0));
-                                System.out.println("len = " + len);
-				for(int i = 0; i < len; i++) 
-				{
-					columns = (List<?>) rows.get(i);
-					JSONObject actions = new JSONObject();
-					actions.put("action_id", columns.get(0).toString());
-					actions.put("action_uuid", columns.get(1).toString());
-					actions.put("action_change_claymore_version", columns.get(2).toString());
-					actions.put("action_change_start_bat", columns.get(3).toString());
-					actions.put("action_download_claymore_version", columns.get(4).toString());
-					actions.put("action_restart_claymore", columns.get(5).toString());
-                                        //Este no estaba, preguntar si hace falta o no
-                                        //actions.put("action_reset_rig", columns.get(6).toString());
-                                        actions.put("rig_uuid", columns.get(7).toString());										
-					list_action.put(actions);
-				}
-				JSONObject obj_action = new JSONObject();
-				obj_action.put("action", list_action);				
-				action_list = obj_action.toString();
-			}
-			else {
-				action_list = "{\"action\": [{\"action_id\": \"123456\",\"action_uuid\": \"ASWER123UYT657\",\"action_create_datetime\": \"2017-01-01\",\" action_description \": \"Luis\",\"category_uuid \": \"BELLO\",\"team_uuid \": \"VENEZUELA\",,\"action_status \": \"04142723549\"}]}";
-			}
-			response = action_list;
-		}
-		catch (Exception e){
-			e.printStackTrace();
-			response = utils.get_msg("0037", Arrays.toString(e.getStackTrace()).substring(0,300));
-		}
-		finally
-		{
-			return response;
-		}
-	}
+        
+	
         
         
 }
