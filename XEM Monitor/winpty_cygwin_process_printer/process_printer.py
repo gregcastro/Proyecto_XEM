@@ -17,7 +17,7 @@ from multiprocessing import Queue
 # Configuration variables
 seconds_between_requests = 1
 # web_server_address = 'http://192.168.0.102:8081/xem'
-web_server_address = 'http://192.168.2.41:8081'
+web_server_address = 'http://192.168.0.100:8081'
 # payload informatcion
 user_email = "alfonsof@gmail.com"
 rig_name = "Min02"
@@ -239,7 +239,10 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             else:
                 while True:
                     rig_uuid = str( uuid.uuid4() )
-                    r = requests.post(web_server_address+'/rig/'+rig_uuid, data={"gpu_info":str(gpu_info)})
+                    r = requests.get(web_server_address+'/rig/'+rig_uuid, data={"gpu_info":str(gpu_info)})
+                    
+                    print(r.headers['content-type'])
+                    print(r.status_code)
                     response = r.json()
                     if 'rig_uuid' not in response:
                         break
@@ -267,8 +270,7 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
 
             # Send request to server
             try:
-
-                requests.post(web_server_address+'/rig', data={"gpu_info":str(gpu_info)})
+                requests.post(web_server_address+'/rig', data=str({"gpu_info":str(gpu_info)}) )
                 # requests.post(web_server_address+'/rig', data={"gpu_info":str(gpu_info), "rig_gpu_info_eth_json":str(GPUInfoETH_json), "rig_gpu_info_second_coin_json":str(GPUInfoSecondCoin_json) })
                 # requests.post('http://192.168.2.103/xem/rig', data=gpu_info_string)
             except:

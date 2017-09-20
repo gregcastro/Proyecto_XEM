@@ -42,7 +42,6 @@ from win32com.client import GetObject
 #   "properties": {
 #     "version": "nombre de version",
 #     "start_bat_data": "configuracion de claymore",
-#     "IP_Reset": "IP de RIG a resetear"
 #   }
 # }
 
@@ -53,23 +52,22 @@ data = json.loads('{"accion": {"cambiar_version_claymore": false,"reiniciar_clay
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\nprocess_printer.exe -c "EthDcrMiner64.exe '
 myIP = ''
 # web_server = 'http://172.16.10.103:8081/xem'
-web_server = 'http://192.168.2.41:8081'
+web_server = 'http://192.168.0.100:8081'
 
 def web_get_request_JSON():
     global data
 
     # Find rig_uuid 
     if os.path.exists(wDir + r"\rig_uuid.txt"):
-        print("si existe el path")
+        # print("si existe el path")
         file = open(wDir + r"\rig_uuid.txt", "r") 
         rig_uuid = file.read()
-        print(rig_uuid)
+        # print(rig_uuid)
 
-        #r = requests.get(web_server + "/rig")
         r = requests.get(web_server + '/action/by_rig/' + rig_uuid)
 
         ##################
-        print(r.status_code)
+        print("Status Code : " + str(r.status_code))
         # print(r.headers['content-type'])
         # print(r.json())
         ##################
@@ -81,8 +79,7 @@ def web_get_request_JSON():
         data = r.json()
 
         #Print de gcastro
-        print("data = ")
-        print(data)
+        print("data = " + str(data) + "\n")
 
     else:
         print('Error: No existe el path' + wDir + r"\rig_uuid.txt")
@@ -121,33 +118,33 @@ def reiniciar_claymore():
     iniciar_claymore()
 
 def request_reiniciar_claymore():
-    if data['accion']['reiniciar_claymore'] == True:
+    if data['action']['action_restart_claymore'] == "1":
         reiniciar_claymore()
-        data['accion']['reiniciar_claymore'] = False
+        data['action']['action_restart_claymore'] = "0"
 
 def cambiar_version_claymore():
     global target
     global wDir
     global icon
-    if data['accion']['cambiar_version_claymore'] == True:
+    if data['action']['action_change_claymore_version'] == "1":
         target = "C:\\Users\\Miner\\Miners\\Claymore\\" + data['propiedades']['version'] + "\\start.bat"
         wDir = "C:\\Users\\Miner\\Miners\\Claymore\\" + data['propiedades']['version']
         icon = "C:\\Users\\Miner\\Miners\\Claymore\\" + data['propiedades']['version'] + "\\start.bat"
         if os.path.exists(wDir):
             crear_acceso_directo_start_bat()
             reiniciar_claymore()
-        data['accion']['cambiar_version_claymore'] = False
+        data['action']['action_change_claymore_version'] = "0"
 
 def cambiar_start_bat():
-    if data['accion']['cambiar_start_bat'] == True:
+    if data['action']['action_change_start_bat'] == "1":
         if os.path.exists(wDir):
             with open(target,'w') as f:
            # with open(r"C:\Users\Miner\Miners\Claymore\start.txt",'w') as f:
-                f.write(windows_config + data['propiedades']['start_bat_data'] + '"')
+                f.write(windows_config + data['properties']['start_bat_data'] + '"')
             f.closed
             crear_acceso_directo_start_bat()
             reiniciar_claymore()
-            data['accion']['cambiar_start_bat'] = False
+            data['action']['action_change_start_bat'] = "0"
 
 def descargar_nueva_version_claymore():
     # if data['accion']['descargar_nueva_version_claymore'] == True:
@@ -176,6 +173,7 @@ def descargar_nueva_version_claymore():
         # data['accion']['descargar_nueva_version_claymore'] = False
         data['action']['action_download_claymore_version'] = "0"
 
+#Aun no he modificado este
 def resetear_RIG():
     global client_socket
     if data['accion']['resetear_RIG'] == True and data['propiedades']['IP_Reset'] == myIP:
@@ -205,18 +203,14 @@ def main():
         try:
             web_get_request_JSON()
             time.sleep(2)
-            print('gcastro: after time sleep')
         except:
             print('ERROR GET')
             time.sleep(2) # Reintentar en 1 segundo
             pass
         else:
-            print("descargar_nueva_version_claymore")
             descargar_nueva_version_claymore()
-            print("FIN")
-            # cambiar_start_bat()
-            # cambiar_version_claymore()
-            # request_reiniciar_claymore()
+            cambiar_start_bat()
+            cambiar_version_claymore()
+            request_reiniciar_claymore()
             # resetear_RIG()
-
 main()
