@@ -1,16 +1,21 @@
 package net.xem.ws;
 
 //import javax.ws.rs.Consumes;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
+import org.json.JSONException;
 
 
 @Path("reset")
+@Produces("application/json")
+@Consumes("application/json")
 public class reset {
 	
 	@GET
@@ -35,7 +40,7 @@ public class reset {
 	
 	@POST 
 	@Path("/")
-	public static String create(final MultivaluedMap<String, String> formParams){
+	public static String create(String formParams) throws JSONException{
 		
 		String response = "";
 		response = net.xem.business.reset.create(formParams);
@@ -44,23 +49,23 @@ public class reset {
 	}
 	
 	@PUT 
-	@Path("/{uuid}/")
-	public static String update(@PathParam("uuid") String uuid, final MultivaluedMap<String, String> formParams){
+	@Path("/{rig_uuid}/")
+	public static String update(@PathParam("rig_uuid") String rig_uuid, String formParams) throws JSONException{
 			
-		String response = "";
-		response = net.xem.business.reset.update(formParams,uuid);
-		
-		return response;
+            String response = "";
+            response = net.xem.business.reset.update(formParams, rig_uuid);
+
+            return response;
 	}
 	
 	@DELETE
-	@Path("/{uuid}/")
-	public static String delete(@PathParam("uuid") String uuid){
+	@Path("/{rig_uuid}/")
+	public static String delete(@PathParam("rig_uuid") String rig_uuid){
 		
-		String response = "";
-		response = net.xem.business.reset.delete(uuid);
-		
-		return response;
+            String response = "";
+            response = net.xem.business.reset.delete(rig_uuid);
+
+            return response;
 	}
 
 }

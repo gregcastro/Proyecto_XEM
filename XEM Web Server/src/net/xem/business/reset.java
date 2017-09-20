@@ -7,6 +7,7 @@ import net.xem.common.utils;
 import net.xem.connectors.mysql;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -125,114 +126,120 @@ public class reset {
 	}
 
 	@SuppressWarnings("finally")
-	public static String create(final MultivaluedMap<String, String> formParams) {
+	public static String create(String formParams) throws JSONException {
+                
+            JSONObject objParams = null;
+            try {
+                objParams = new JSONObject(formParams);
+            } catch (JSONException ex) {
+                System.err.println("Error al convertir JSON: " + ex);
+            }
+            
+            String response = "";
 
-		String response = "";
+            String rig_reseter_number = objParams.getString("rig_reseter_number");
+            String user_email = objParams.getString("user_email");
+            String rig_uuid = objParams.getString("rig_uuid");
 
-		String uuid = UUID.randomUUID().toString();
-		String user_uuid = formParams.get("user_uuid").toString().replaceAll("\\[|\\]", "");
-		String rig_uuid = formParams.get("rig_uuid").toString().replaceAll("\\[|\\]", "");
-		
-		try{
-
-			if (utils.get_config("dummy").equals("false")) {
-				String params[] = {uuid,user_uuid,rig_uuid};
-				mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_create(?,?,?);", params);
+            try{
+                if (utils.get_config("dummy").equals("false")) {
+                    String params[] = {rig_reseter_number,user_email,rig_uuid};
+                    mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_create(?,?,?);", params);
 				
-				JSONObject reset_result= new JSONObject();
-				reset_result.put("reset_uuid", uuid);
-				reset_result.put("user_uuid", user_uuid);
-				reset_result.put("rig_uuid", rig_uuid);
+                    JSONObject reset_result = new JSONObject();
+                    reset_result.put("rig_reseter_number", rig_reseter_number);
+                    reset_result.put("user_email", user_email);
+                    reset_result.put("rig_uuid", rig_uuid);
 
 				
-				JSONObject reset = new JSONObject();
-				reset.put("reset", reset_result);				
-				response = reset.toString();
-			}
-			else {
-				response = "{\"reset\": [{\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime_create\": \"2017-01-01\",\"reset_value \": \"Prueba Value\",\"reset_name \": \"Prueba Name\",\"group_uuid \": \"ASWER123UYT657\",\"reset_reset_id \": \"ASWER123UYT657\"}]}";
-			}
+                    JSONObject reset = new JSONObject();
+                    reset.put("reset", reset_result);				
+                    response = reset.toString();
+                }
+                else {
+                    response = "{\"reset\": [{\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime_create\": \"2017-01-01\",\"reset_value \": \"Prueba Value\",\"reset_name \": \"Prueba Name\",\"group_uuid \": \"ASWER123UYT657\",\"reset_reset_id \": \"ASWER123UYT657\"}]}";
+                }
 
-		}
-		catch (Exception e){
-			e.printStackTrace();
-			response = utils.get_msg("0034", Arrays.toString(e.getStackTrace()).substring(0,300));
-		}
-		finally
-		{
-			return response;
-		}
+            }
+            catch (Exception e){
+                System.err.println("Error: " + e);
+                response = utils.get_msg("0034", e.toString());
+            }
+            finally {
+                return response;
+            }
 	}
 
 	@SuppressWarnings("finally")
-	public static String update(final MultivaluedMap<String, String> formParams, String uuid) {
-
-		String response = "";
+	public static String update(String formParams, String rig_uuid) throws JSONException {
+            
+            JSONObject objParams = null;
+            try {
+                objParams = new JSONObject(formParams);
+            } catch (JSONException ex) {
+                System.err.println("Error al convertir JSON: " + ex);
+            }
+            
+            String response = "";
 		
-		String user_uuid = formParams.get("user_uuid").toString().replaceAll("\\[|\\]", "");
-		String rig_uuid = formParams.get("rig_uuid").toString().replaceAll("\\[|\\]", "");
+            String rig_reseter_number = objParams.getString("rig_reseter_number");
+            String user_email = objParams.getString("user_email");
 
-		try{
+            try{
+                if (utils.get_config("dummy").equals("false")) {
+                    String params[] = { rig_reseter_number, user_email, rig_uuid };
+                    mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_update(?,?,?);", params);	
+					
+                    JSONObject reset_result = new JSONObject();
+                    reset_result.put("rig_reseter_number", rig_reseter_number);
+                    reset_result.put("user_email", user_email);
+                    reset_result.put("rig_uuid", rig_uuid);
 
-			if (utils.get_config("dummy").equals("false")) {
+                    JSONObject reset = new JSONObject();
+                    reset.put("reset", reset_result);				
+                    response = reset.toString();
+                }
+                else {
+                    response = "{\"reset\": [{\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime_create\": \"2017-01-01\",\"reset_value \": \"Prueba Value\",\"reset_name \": \"Prueba Name\",\"group_uuid \": \"ASWER123UYT657\",\"reset_reset_id \": \"ASWER123UYT657\"}]}";
+                }
 
-				String params[] = {uuid,user_uuid,rig_uuid};
-				mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_update(?,?,?);", params);	
-				
-				
-				JSONObject reset_result= new JSONObject();
-				reset_result.put("reset_uuid", uuid);
-				reset_result.put("user_uuid", user_uuid);
-				reset_result.put("rig_uuid", rig_uuid);
-				
-				JSONObject reset = new JSONObject();
-				reset.put("reset", reset_result);				
-				response = reset.toString();
-			}
-			else {
-				response = "{\"reset\": [{\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime_create\": \"2017-01-01\",\"reset_value \": \"Prueba Value\",\"reset_name \": \"Prueba Name\",\"group_uuid \": \"ASWER123UYT657\",\"reset_reset_id \": \"ASWER123UYT657\"}]}";
-			}
-
-		}
-		catch (Exception e){
-			e.printStackTrace();
-			response = utils.get_msg("0035", Arrays.toString(e.getStackTrace()).substring(0,300));
-		}
-		finally
-		{
-			return response;
-		}
+            }
+            catch (Exception e){
+                System.err.println("Error: " + e);
+                response = utils.get_msg("0035", e.toString());
+            }
+            finally {
+                return response;
+            }
 	}
 
 	@SuppressWarnings("finally")
-	public static String delete(String uuid) {
+	public static String delete(String rig_uuid) {
 
-		String response = "";
+            String response = "";
 
+            try{
 
-		try{
+                if (utils.get_config("dummy").equals("false")) {
+                    String params[] = {rig_uuid};
+                    mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_delete(?);", params);				
+                    JSONObject reset_result = new JSONObject();
+                    reset_result.put("reset_uuid", rig_uuid);
+                    JSONObject reset = new JSONObject();
+                    reset.put("reset", reset_result);
+                    response = reset.toString();
+                }
+                else {
+                    response = "{\"group\": [{\"reset_uuid\": \"ASWER123UYT657\"}]}";
+                }
 
-			if (utils.get_config("dummy").equals("false")) {
-				String params[] = {uuid};
-				mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_delete(?);", params);				
-				JSONObject reset_result= new JSONObject();
-				reset_result.put("reset_uuid", uuid);
-				JSONObject reset = new JSONObject();
-				reset.put("reset", reset_result);
-				response = reset.toString();
-			}
-			else {
-				response = "{\"group\": [{\"reset_uuid\": \"ASWER123UYT657\"}]}";
-			}
-
-		}
-		catch (Exception e){
-			e.printStackTrace();
-			response = utils.get_msg("0036", Arrays.toString(e.getStackTrace()).substring(0,300));
-		}
-		finally
-		{
-			return response;
-		}
+            }
+            catch (Exception e){
+                System.err.println("Error: " + e);
+                response = utils.get_msg("0036", e.toString());
+            }
+            finally {
+                return response;
+            }
 	}
 }
