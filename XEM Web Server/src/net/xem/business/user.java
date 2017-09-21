@@ -2,7 +2,6 @@ package net.xem.business;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import net.xem.common.utils;
 import net.xem.connectors.mysql;
 import org.json.JSONArray;
@@ -119,42 +118,42 @@ public class user {
             System.err.println("Error al convertir JSON: " + ex);
         }
 
-            String response ="";
-            
-            String user_email = objParams.getString("user_email");
-            //Deberia llegar hasheada desde el front pero mientras tanto le hare md5 aqui
-            String user_password = objParams.getString("user_email");
-            
-            //Aplico md5
-            user_password = net.xem.common.utils.get_md5(user_password);
-            JSONObject user_result = new JSONObject();
+        String response ="";
 
-            try{
-                if (utils.get_config("dummy").equals("false")) {
+        String user_email = objParams.getString("user_email");
+        //Deberia llegar hasheada desde el front pero mientras tanto le hare md5 aqui
+        String user_password = objParams.getString("user_email");
 
-                    String params[] = {user_email, user_password};
-                    mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_user_create(?,?);", params);
-                    
-                    user_result.put("user_email", user_email);
-                    user_result.put("user_password", user_password);
-                    			
-                    response = user_result.toString();
+        //Aplico md5
+        user_password = net.xem.common.utils.get_md5(user_password);
+        JSONObject user_result = new JSONObject();
 
-                }
-                else {
-                    user_result.put("user_email", "gcastro@gmail.com");
-                    user_result.put("user_password", "12345678ABCDEFGH");
-                    			
-                    response = user_result.toString();
-                }
+        try{
+            if (utils.get_config("dummy").equals("false")) {
+
+                String params[] = {user_email, user_password};
+                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_user_create(?,?);", params);
+
+                user_result.put("user_email", user_email);
+                user_result.put("user_password", user_password);
+
+                response = user_result.toString();
+
             }
-            catch (Exception e){
-                System.err.println("Error: " + e);
-                response = utils.get_msg("0039", e.toString());
+            else {
+                user_result.put("user_email", "gcastro@gmail.com");
+                user_result.put("user_password", "12345678ABCDEFGH");
+
+                response = user_result.toString();
             }
-            finally {
-                return response;
-            }
+        }
+        catch (Exception e){
+            System.err.println("Error: " + e);
+            response = utils.get_msg("0039", e.toString());
+        }
+        finally {
+            return response;
+        }
     }
 
     public static String update(String formParams, String email) throws JSONException {
@@ -203,25 +202,25 @@ public class user {
 
     public static String delete(String email) {
         String response = "";
-            try {
-                if (utils.get_config("dummy").equals("false")) {
-                    String params[] = { email };
-                    mysql.execQuery(utils.get_config("db.connstr-event"), "sp_user_delete(?);", params);
-                    JSONObject user_result = new JSONObject();
-                    user_result.put("user_email", email);
-                    JSONObject user = new JSONObject();
-                    user.put("user", user_result);
-                    response = user.toString();
-                } else {
-                    response = "{\"user\": [{\"user_email\": \"prueba@gmail.com\"}]}";
-                }
-
-            } catch (Exception e) {
-                System.err.println("Error: " + e);
-                response = utils.get_msg("0036", e.toString());
-            } finally {
-                return response;
+        try {
+            if (utils.get_config("dummy").equals("false")) {
+                String params[] = { email };
+                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_user_delete(?);", params);
+                JSONObject user_result = new JSONObject();
+                user_result.put("user_email", email);
+                JSONObject user = new JSONObject();
+                user.put("user", user_result);
+                response = user.toString();
+            } else {
+                response = "{\"user\": [{\"user_email\": \"prueba@gmail.com\"}]}";
             }
+
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+            response = utils.get_msg("0036", e.toString());
+        } finally {
+            return response;
+        }
     }
 
 }

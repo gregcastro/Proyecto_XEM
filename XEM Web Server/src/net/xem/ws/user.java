@@ -22,10 +22,9 @@ public class user {
     @GET
     @Path("/")
     public static String list(){
-
-            String response = "";
-            response = net.xem.business.user.list();		
-            return response;
+        String response = "";
+        response = net.xem.business.user.list();		
+        return response;
     }
     
     @GET

@@ -15,3 +15,13 @@ Ejemplo JSON POST create rig
 "location_uuid" : "None"
 	
 }
+
+
+Ejemplo POST create location
+
+{
+	"location_name" : "Cafetal",
+	"user_email" : "alfonsof@gmail.com",
+	"rig_uuid" : "8f3bf426-b998-4c6b-a892-7f007060e0e1"
+
+}
