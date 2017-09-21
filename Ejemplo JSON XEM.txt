@@ -1,21 +1,30 @@
+###### RIG ######
+
 Ejemplo JSON POST create rig
 
-{
-"rig_uuid" : "dd76f82f-994d-455a-ac73-290b463f7d67",
-"rig_name" : "Min02",
-"user_email" : "alfonsof@gmail.com",
-"rig_lan_ip" : "192.168.2.103",
-"rig_claymore_version" : "9.5",
-"rig_time_up" : "0:04:06",
-"rig_reset_today" : "None",
-"rig_claymore_reset_today" : "None",
-"rig_gpu_info_eth" : "[{\"Fan\":71, \"Temp\":64,\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":20.406},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"}]", 
-"rig_gpu_second_coin" : "Decred",
-"rig_gpu_info_second_coin" : "[{\"Mhs\":612.193},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"}]", 
-"location_uuid" : "None"
-	
+{ "gpu_info" :"{'rig_uuid' : 'dd76f82f-994d-455a-ac73-290b463f7d67', 'rig_name' : 'Min02', 'rig_email' : 'alfonsof@gmail.com', 'rig_lan_ip' : '192.168.2.103', 'rig_claymore_version' : '9.5', 'rig_time_up' : '0:04:06', 'rig_reset_today' : 'None', 'rig_claymore_reset_today' : 'None', 'rig_gpu_info_eth' : '[{\"Fan\":71, \"Temp\":64,\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":20.406},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"}]', 'rig_gpu_second_coin' : 'Decred', 'rig_gpu_info_second_coin' : '[{\"Mhs\":612.193},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"}]', 'location_uuid' : 'None'}"}
+
+
+DEBERIA HACER QUE FUNCIONE ASI:
+{ "gpu_info" :
+	{
+	"rig_uuid" : "dd76f82f-994d-455a-ac73-290b463f7d67",
+	"rig_name" : "Min02",
+	"rig_email" : "alfonsof@gmail.com",
+	"rig_lan_ip" : "192.168.2.103",
+	"rig_claymore_version" : "9.5",
+	"rig_time_up" : "0:04:06",
+	"rig_reset_today" : "None",
+	"rig_claymore_reset_today" : "None",
+	"rig_gpu_info_eth" : "[{\"Fan\":71, \"Temp\":64,\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":20.406},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"Radeon RX 470/570\\r\\n\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"},{\"Fan\":\"None\",\"Temp\":\"None\",\"Model\":\"None\",\"Mhs\":\"None\"}]", 
+	"rig_gpu_second_coin" : "Decred",
+	"rig_gpu_info_second_coin" : "[{\"Mhs\":612.193},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"},{\"Mhs\":\"None\"}]", 
+	"location_uuid" : "None"
+		
+	}
 }
 
+###### LOCATION ######
 
 Ejemplo POST create location
 
@@ -23,5 +32,22 @@ Ejemplo POST create location
 	"location_name" : "Cafetal",
 	"user_email" : "alfonsof@gmail.com",
 	"rig_uuid" : "8f3bf426-b998-4c6b-a892-7f007060e0e1"
+}
 
+
+Ejemplo PUT update location
+
+{
+	"location_name" : "los palos grandes",
+	"user_email" : "alfonsof@gmail.com",
+	"rig_uuid" : "8f3bf426-b998-4c6b-a892-7f007060e0e1"
+}
+
+###### USER ######
+
+Ejemplo POST create user
+
+{
+	"user_email" : "josegregorio994@gmail.com",
+	"password" : "123456"
 }

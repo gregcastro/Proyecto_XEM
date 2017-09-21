@@ -43,7 +43,7 @@ public class rig {
 	public static String ReadByUser(@PathParam("uuid") String uuid){
 		String response = "";
 		response = net.xem.business.rig.read_by_user(uuid);
-		
+		                
 		return response;
 	}
 	
