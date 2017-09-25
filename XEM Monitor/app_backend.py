@@ -35,7 +35,7 @@ icon = r"C:\Users\Miner\Miners\Claymore\Claymore's Dual Ethereum+Decred_Siacoin_
 data = json.loads('{"accion": {"cambiar_version_claymore": false,"reiniciar_claymore": false,"cambiar_start_bat": false,"descargar_nueva_version_claymore": false,"resetear_RIG": false},"propiedades": {"version": "version1","start_bat_data": "-wd 1 -r 1 -epool stratum+tcp://eth-us.dwarfpool.com:8008 -ewal 0x67Eb849500f4bf5fd5ac7dD34E65Fa0f02Bd09d9/LETHI19/luisgermim@gmail.com -esm 0 -mode 0 -epsw x -allpools 1 -mport -3333 -dpool stratum+tcp://dcr.suprnova.cc:3252 -dwal luisgermim.LETHI19 -dpsw 1234 -tt -77 -ttdcr 80 -fanmin 80","IP_Reset": "192.168.0.190"}}')
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\nprocess_printer.exe -c "EthDcrMiner64.exe '
 myIP = ''
-web_server = 'http://192.168.0.100:8081'
+web_server = 'http://192.168.2.41:8081'
 
 def web_get_request_JSON():
     global data
