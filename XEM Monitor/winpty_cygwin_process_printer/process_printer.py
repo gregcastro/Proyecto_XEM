@@ -17,12 +17,14 @@ from multiprocessing import Queue
 # Configuration variables
 seconds_between_requests = 1
 # web_server_address = 'http://192.168.0.102:8081/xem'
-web_server_address = 'http://192.168.0.100:8081'
+web_server_address = 'http://192.168.2.41:8081'
 # payload informatcion
-user_email = "alfonsof@gmail.com"
-rig_name = "Min02"
-claymore_version = "9.5"
-
+# user_email = "alfonsof@gmail.com"
+# rig_name = "Min02"
+# claymore_version = "9.5"
+user_email = ""
+rig_name = ""
+claymore_version = ""
 
 
 # Parse options from outside to retrieve Miner command
@@ -39,71 +41,40 @@ if (options.rig_reset_today != None):
     if (options.rig_claymore_reset_today != None):
         gpu_info["rig_claymore_reset_today"] = options.rig_claymore_reset_today
 
-
-
-
 # Global dictionary
 gpu_info = {
-"rig_email":"None",
-"rig_name":"None",
-"rig_uuid":"None",
-"rig_gpu_second_coin":"None",
-"rig_lan_ip":"None",
-"rig_claymore_version":"None",
-"rig_time_up":"None",
-"rig_reset_today":"None",
-"location_uuid":"None",
-"rig_claymore_reset_today":"None",
-"rig_gpu_info_eth": [
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
- {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}
-    ],
-"rig_gpu_info_second_coin": [
-{"Mhs":"None"},
-{"Mhs":"None"},
-{"Mhs":"None"},
-{"Mhs":"None"},
-{"Mhs":"None"},
-{"Mhs":"None"},
-{"Mhs":"None"},
-{"Mhs":"None"}
-    ]
+    "rig_email":"None",
+    "rig_name":"None",
+    "rig_uuid":"None",
+    "rig_gpu_second_coin":"None",
+    "rig_lan_ip":"None",
+    "rig_claymore_version":"None",
+    "rig_time_up":"None",
+    "rig_reset_today":"None",
+    "location_uuid":"None",
+    "rig_claymore_reset_today":"None",
+    "rig_gpu_info_eth": [
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
+     {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}
+        ],
+    "rig_gpu_info_second_coin": [
+    {"Mhs":"None"},
+    {"Mhs":"None"},
+    {"Mhs":"None"},
+    {"Mhs":"None"},
+    {"Mhs":"None"},
+    {"Mhs":"None"},
+    {"Mhs":"None"},
+    {"Mhs":"None"}
+        ]
 }
 
-#'gpu_info = {"rig_email":"None", "rig_name":"None", "rig_gpu_second_coin":"None", "rig_lan_ip":"None", "rig_claymore_version":"None", "rig_time_up":"None", "rig_reset_today":"None", "rig_claymore_reset_today":"None", "rig_gpu_info_eth": [{"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}, {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}, {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}, {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}, {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}, {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}, {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"}, {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"} ], "rig_gpu_info_second_coin": [{"Mhs":"None"}, {"Mhs":"None"}, {"Mhs":"None"}, {"Mhs":"None"}, {"Mhs":"None"}, {"Mhs":"None"}, {"Mhs":"None"}, {"Mhs":"None"} ] }'
-
-
-### Global dictionary Example
-# gpu_info = {\
-# "rig_email":"ljbello@gmail.com",\
-# "rig_name":"Min01",\
-# "rig_gpu_second_coin":"PascalCoin",\
-# "rig_lan_ip":"192.168.1.68",\
-# "rig_claymore_version":"9.5",\
-# "rig_time_up":"09:09",\
-# "RigResetToday":"4",\
-# "rig_claymore_reset_today":"0",\
-# "rig_gpu_info_eth": [\
-# {"Mhs":"24.3", "Temp":"70", "Fan":"80","Model":"Rx480"},\
-# {"Mhs":"24.1", "Temp":"68", "Fan":"80","Model":"Rx480"},\
-# {"Mhs":"24.5", "Temp":"68", "Fan":"90","Model":"Rx480"},\
-# {"Mhs":"24.1", "Temp":"73", "Fan":"80","Model":"Rx480"},\
-# {"Mhs":"24.7", "Temp":"76", "Fan":"80","Model":"Rx480"}\
-#    ],\
-# "rig_gpu_info_second_coin": [\
-# {"Mhs":"2434.3" },\
-# {"Mhs":"2422.1"},\
-# {"Mhs":"2433.5"},\
-# {"Mhs":"2433.1"},\
-# {"Mhs":"2411.7"}\
-#    ]\
-# }
 
 # Check Local Ip Address
 gpu_info["rig_lan_ip"] = socket.gethostbyname(socket.gethostname())
@@ -176,15 +147,15 @@ def parse_line(line,dict_output):
     # This is particularly to check which GPU es currently running:
     if "recognized as" in line:
 
-        print("line = ")
+        # print("line = ")
         print(line)
         #Check which GPU we are talking about
         gpu_number = int(line[ line.find('recognized as') - 2])
-        print("gpu_number = ")
+        # print("gpu_number = ")
         print(gpu_number)
         #Parse GPU Model
         model = line[ line.find('recognized as') + 14:]
-        print("model = ")
+        # print("model = ")
         print(model)
         dict_output["rig_gpu_info_eth"][gpu_number]['Model'] = model
 
@@ -221,28 +192,56 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
         # check if 10 seconds have passed since last sent request
         if time.time() - tick_time > seconds_between_requests:
             # Send request
+            
+
+            # Prueba leer linea por linea gpu_info_config.txt
+            if os.path.exists("gpu_config.txt"):
+                file = open("gpu_config.txt", "r") 
+                rig_email = file.readline()
+                # index = rig_email.find("=")
+                rig_email = rig_email[rig_email.find("=")+1: len(rig_email)]
+                rig_email = rig_email.replace(" ", "")
+                rig_email = rig_email.replace("\n", "")
+
+                rig_name = file.readline()
+                rig_name = rig_name[rig_name.find("=")+1: len(rig_name)]
+                rig_name = rig_name.replace(" ", "")
+                rig_name = rig_name.replace("\n", "")
+
+                claymore_version = file.readline()
+                claymore_version = claymore_version[claymore_version.find("=")+1: len(claymore_version)]
+                claymore_version = claymore_version.replace(" ", "")
+
+
+                print(rig_email)
+                print(rig_name)
+                print(claymore_version)
+
+            else:
+                #Ver que se hace en este caso.. 
+                print("The file doesn't exits")
+
             # Fill variables that are not parsed from the console.
-            gpu_info["rig_email"] = user_email
+            gpu_info["rig_email"] = rig_email
             gpu_info["rig_name"] = rig_name
             gpu_info["rig_claymore_version"] = claymore_version
+
+
             # calculate elapsed time.
             gpu_info["rig_time_up"] = "{}".format(datetime.timedelta(seconds=int(time.time() - start_time)))
 
-
-            
-
-            # If the rig_uuid exists then a use it. If not, I create it 
+            # If the rig_uuid exists then a use it. If isn't, I create it 
             if os.path.exists("rig_uuid.txt"):
                 file = open("rig_uuid.txt", "r") 
                 rig_uuid = file.read()
-                print(rig_uuid)
+                # print(rig_uuid)
             else:
                 while True:
                     rig_uuid = str( uuid.uuid4() )
                     r = requests.get(web_server_address+'/rig/'+rig_uuid, data={"gpu_info":str(gpu_info)})
                     
-                    print(r.headers['content-type'])
-                    print(r.status_code)
+                    # print(r.headers['content-type'])
+                    # print(r.status_code)
                     response = r.json()
                     if 'rig_uuid' not in response:
                         break
@@ -258,15 +257,7 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             gpu_info["rig_uuid"] = rig_uuid
 
 
-            # Esto ya no lo estoy necesitando
-            # GPUInfoETH_json = gpu_info["rig_gpu_info_eth"]
-            # GPUInfoSecondCoin_json = gpu_info["rig_gpu_info_second_coin"]
-
-            # print('\n\n\n##################################')
-            # print(GPUInfoETH_json)
-            # print(GPUInfoSecondCoin_json)
-            # print(gpu_info)
-            # print('##################################\n\n\n')
+            print(gpu_info)
 
             # Send request to server
             try:
@@ -277,6 +268,6 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
                 print('ERROR POST')
                 pass
             #print information to console
-            print(gpu_info)
-            print(line)
+            # print(gpu_info)
+            # print(line)
             tick_time = time.time()
