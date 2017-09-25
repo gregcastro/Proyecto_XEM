@@ -217,13 +217,13 @@ public class rig {
                 String rig_reset_today = gpu_info.getString("rig_reset_today");
                 String rig_claymore_reset_today = gpu_info.getString("rig_claymore_reset_today");
 
-//                String rig_gpu_info_eth = gpu_info.getJSONArray("rig_gpu_info_eth").toString();
-                    String rig_gpu_info_eth = gpu_info.getString("rig_gpu_info_eth");
+                String rig_gpu_info_eth = gpu_info.getJSONArray("rig_gpu_info_eth").toString();
+//                    String rig_gpu_info_eth = gpu_info.getString("rig_gpu_info_eth");
 
                 String rig_gpu_second_coin = gpu_info.getString("rig_gpu_second_coin");
 
-//                String rig_gpu_info_second_coin = gpu_info.getJSONArray("rig_gpu_info_second_coin").toString();
-                    String rig_gpu_info_second_coin = gpu_info.getString("rig_gpu_info_second_coin");
+                String rig_gpu_info_second_coin = gpu_info.getJSONArray("rig_gpu_info_second_coin").toString();
+//                    String rig_gpu_info_second_coin = gpu_info.getString("rig_gpu_info_second_coin");
 
 
                 String location_uuid = gpu_info.getString("location_uuid");
