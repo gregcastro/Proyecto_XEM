@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html >
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="height=device-height,initial-scale=1">
+  <title>XEM</title>
+
+
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+
+</head>
+
+<body>
+  
+
+  <button id="btn_list_rigs" type="button" class="btn btn-primary">Lista de Rigs</button>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Info ETH</th>
+                <th>Second Coin</th>
+                <th>Info Second Coin</th>
+                <th>°C // Fan %</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+    </div>
+
+
+
+<!-- <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script> -->
+
+  
+</body>
+</html>
