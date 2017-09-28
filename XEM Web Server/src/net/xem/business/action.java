@@ -138,7 +138,7 @@ public class action {
                             actions.put("action_reset_rig", columns.get(11).toString());
                             
                             properties.put("rig_claymore_version", columns.get(9).toString());
-                            properties.put("user_start_bat_data", (columns.get(10) == null ? "" : columns.get(10).toString() ) );
+                            properties.put("start_bat_data", (columns.get(10) == null ? "" : columns.get(10).toString() ) );
 
                             main_action.put("action", actions);
                             main_action.put("properties", properties);
@@ -151,6 +151,11 @@ public class action {
                 }
 
                 response = action_list;
+                
+                //Coloco nuevamente la accion de este rig con todos los valores en 0
+                String params[] = {rig_uuid};
+                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_action_rig_reset_values(?);", params);
+                
 
             }
             catch (Exception e){
@@ -158,8 +163,8 @@ public class action {
                 response = utils.get_msg("0038", Arrays.toString(e.getStackTrace()).substring(0,300));
             }
             finally
-            {		
-                    return response;		
+            {
+                return response;		
             }
 	}
         
