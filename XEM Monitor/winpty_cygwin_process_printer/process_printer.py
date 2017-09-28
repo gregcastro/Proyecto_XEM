@@ -195,8 +195,8 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             
 
             # Prueba leer linea por linea gpu_info_config.txt
-            if os.path.exists("gpu_config.txt"):
-                file = open("gpu_config.txt", "r") 
+            if os.path.exists("..\\gpu_config.txt"):
+                file = open("..\\gpu_config.txt", "r") 
                 rig_email = file.readline()
                 # index = rig_email.find("=")
                 rig_email = rig_email[rig_email.find("=")+1: len(rig_email)]
@@ -231,8 +231,8 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             gpu_info["rig_time_up"] = "{}".format(datetime.timedelta(seconds=int(time.time() - start_time)))
 
             # If the rig_uuid exists then a use it. If isn't, I create it 
-            if os.path.exists("rig_uuid.txt"):
-                file = open("rig_uuid.txt", "r") 
+            if os.path.exists("..\\rig_uuid.txt"):
+                file = open("..\\rig_uuid.txt", "r") 
                 rig_uuid = file.read()
                 # print(rig_uuid)
             else:
@@ -250,7 +250,7 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
                 # rig_uuid = str( uuid.uuid4() )
 
                 # # Create a File and Save the rig_uuid
-                file = open("rig_uuid.txt","w") 
+                file = open("..\\rig_uuid.txt","w") 
                 file.write(rig_uuid) 
                 file.close() 
 
