@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
+import org.json.JSONArray;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,6 +67,22 @@ public class rig {
 		response = net.xem.business.rig.Update(formParams,uuid);
 		
 		return response;
+	}
+        
+        @PUT 
+	@Path("/update_rigs_start_bat/{user_uuid}")
+	public static String update_rigs_start_bat(@PathParam("user_uuid") String user_uuid) throws JSONException{
+                
+            //Busco el start_bat_data del usuario 
+            String user = net.xem.business.user.read(user_uuid);
+            JSONObject obj_user = new JSONObject(user);
+            JSONArray aux = obj_user.getJSONArray("user");
+            obj_user = (JSONObject) aux.get(0);
+            
+            String response = "";
+            response = net.xem.business.rig.update_rigs_start_bat(user_uuid, obj_user.getString("user_start_bat_data"));
+
+            return response;
 	}
 	
 	@DELETE

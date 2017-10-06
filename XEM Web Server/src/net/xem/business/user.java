@@ -85,7 +85,8 @@ public class user {
                     users.put("user_id", columns.get(0).toString());
                     users.put("user_email", columns.get(1).toString());
                     users.put("user_password", columns.get(2).toString());
-                    										
+                    users.put("user_start_bat_data", ( columns.get(3) != null ? columns.get(3).toString() : ""  ));
+                										
                     list_user.put(users);
                 }
                 JSONObject obj_user = new JSONObject();

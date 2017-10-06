@@ -55,7 +55,7 @@ public class user {
 
             return response;
     }
-    
+   
     @DELETE
     @Path("/{email}/")
     public static String delete(@PathParam("email") String email){
