@@ -2,6 +2,7 @@ package net.xem.business;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import net.xem.common.utils;
 import net.xem.connectors.mysql;
 import org.json.JSONArray;
@@ -142,28 +143,27 @@ public class location {
         }
 
         String response ="";
-        
+        String location_uuid = UUID.randomUUID().toString();
         String location_name = objParams.getString("location_name");
         String user_email = objParams.getString("user_email");
-        String rig_uuid = objParams.getString("rig_uuid");
         JSONObject location_result = new JSONObject();
         
         try{
             if (utils.get_config("dummy").equals("false")) {
 
-                String params[] = {location_name, user_email, rig_uuid};
+                String params[] = {location_uuid, location_name, user_email};
                 mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_location_rig_create(?,?,?);", params);
                 
+                location_result.put("location_uuid", location_uuid);
                 location_result.put("location_name", location_name);
                 location_result.put("user_email", user_email);
-                location_result.put("rig_uuid", rig_uuid);
 
                 response = location_result.toString();
             }
             else {
+                location_result.put("location_uuid", "uuid_prueba");
                 location_result.put("location_name", "lugar de prueba");
                 location_result.put("user_email", "gcastro@gmail.com");
-                location_result.put("rig_uuid", "12345678ABCDEFGH");
 
                 response = location_result.toString();
             }

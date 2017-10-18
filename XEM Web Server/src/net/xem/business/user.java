@@ -215,7 +215,7 @@ public class user {
                 
                 //Elimino todos los rigs asociados con este usuario
                 //Esto deberia arrojar un json que indique todos los rigs que fueron eliminados para unirlo con el responsede aqui
-                net.xem.business.rig.delete_by_user(email);
+//                net.xem.business.rig.delete_by_user(email);
                 
             } else {
                 response = "{\"user\": [{\"user_email\": \"prueba@gmail.com\"}]}";
