@@ -118,17 +118,21 @@ public class user {
         } catch (JSONException ex) {
             System.err.println("Error al convertir JSON: " + ex);
         }
-
+        
+        
+        
         String response ="";
-
         String user_email = objParams.getString("user_email");
+        
+        //Validar si el user_email ya existe
+
         //Deberia llegar hasheada desde el front pero mientras tanto le hare md5 aqui
-        String user_password = objParams.getString("user_email");
+        String user_password = objParams.getString("user_password");
 
         //Aplico md5
         user_password = net.xem.common.utils.get_md5(user_password);
         JSONObject user_result = new JSONObject();
-
+        
         try{
             if (utils.get_config("dummy").equals("false")) {
 

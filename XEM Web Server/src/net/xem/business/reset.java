@@ -14,115 +14,109 @@ public class reset {
 	@SuppressWarnings("finally")
 	public static String list() {
 
-		String response = "";
-		List<?> rows = null;
-		List<?> columns = null;
+            String response = "";
+            List<?> rows = null;
+            List<?> columns = null;
 
-		String reset_list = "";
+            String reset_list = "";
 
 		try{
 
-			if (utils.get_config("dummy").equals("false")) {
-				String params_query[] = {};
-				rows = mysql.getQuery
-						(utils.get_config("db.connstr-event"),
-								"CALL sp_reset_list();", params_query);
-				
-				JSONArray list_reset= new JSONArray();
-				int len = rows.size();
-				for(int i = 0; i < len; i++) 
-				{
-					columns = (List<?>) rows.get(i);
-					JSONObject reset= new JSONObject();
+                    if (utils.get_config("dummy").equals("false")) {
+                        String params_query[] = {};
+                        rows = mysql.getQuery(utils.get_config("db.connstr-event"),"CALL sp_reset_list();", params_query);
 
-					reset.put("reset_id", columns.get(0).toString());
-					reset.put("reset_uuid", columns.get(1).toString());
-					reset.put("reset_create_datetime", columns.get(2).toString());
-					reset.put("user_uuid", columns.get(3).toString());
-					reset.put("rig_uuid", columns.get(4).toString());
-					list_reset.put(reset);
+                        JSONArray list_reset= new JSONArray();
+                        int len = rows.size();
+                        for(int i = 0; i < len; i++) 
+                        {
+                            columns = (List<?>) rows.get(i);
+                            JSONObject reset= new JSONObject();
 
-				}
-				JSONObject obj_reset = new JSONObject();
-				obj_reset.put("reset", list_reset);
-				
-				reset_list = obj_reset.toString();
+                            reset.put("reset_id", columns.get(0).toString());
+                            reset.put("reset_create_datetime", columns.get(1).toString());
+                            reset.put("reset_uuid", columns.get(2).toString());
+                            reset.put("user_email", columns.get(3).toString());
+                            reset.put("location_uuid", (columns.get(4)!=null ? columns.get(4).toString() :"" ) );
+                            
+                            list_reset.put(reset);
 
-			}
-			else {
-				reset_list = "{\"reset\": [{\"reset_id\": \"123456\",\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime\": \"2017-01-01\",\" reset_firstname \": \"Luis\",\"reset_lastname \": \"BELLO\",\"reset_ country \": \"VENEZUELA\",\"reset_ image \": \"image.jpg\",\"reset_ phone \": \"04142723549\",\"reset_ sex \": \"M\",\"reset_ birthdate \": \"1984-21-01\"}]}";
-			}
+                        }
+                        JSONObject obj_reset = new JSONObject();
+                        obj_reset.put("reset", list_reset);
 
-			response = reset_list;
+                        reset_list = obj_reset.toString();
+
+                    }
+                    else {
+                        reset_list = "{\"reset\": [{\"reset_id\": \"123456\",\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime\": \"2017-01-01\",\" reset_firstname \": \"Luis\",\"reset_lastname \": \"BELLO\",\"reset_ country \": \"VENEZUELA\",\"reset_ image \": \"image.jpg\",\"reset_ phone \": \"04142723549\",\"reset_ sex \": \"M\",\"reset_ birthdate \": \"1984-21-01\"}]}";
+                    }
+
+                    response = reset_list;
 
 		}
 		catch (Exception e){
-			e.printStackTrace();
-			response = utils.get_msg("0018", Arrays.toString(e.getStackTrace()).substring(0,300));
+                    e.printStackTrace();
+                    response = utils.get_msg("0018", e.getCause().toString());
 		}
 		finally
 		{
-			return response;
+                    return response;
 		}
 	}
 
 	@SuppressWarnings("finally")
 	public static String read(String reset_uuid) {
 
-		String response = "";
+            String response = "";
 
-		List<?> rows = null;
-		List<?> columns = null;
+            List<?> rows = null;
+            List<?> columns = null;
 
-		String reset_list = "";
+            String reset_list = "";
+            try{
+                if (utils.get_config("dummy").equals("false")) {
 
-		try{
+                    String params_query[] = {reset_uuid};
+                    rows = mysql.getQuery(utils.get_config("db.connstr-event"),"CALL sp_reset_read(?);", params_query);
 
+                    JSONArray list_reset= new JSONArray();
+                    int len = rows.size();
+                    for(int i = 0; i < len; i++) 
+                    {
+                        columns = (List<?>) rows.get(i);
+                        JSONObject reset= new JSONObject();
+                        reset.put("reset_id", columns.get(0).toString());
+                        reset.put("reset_create_datetime", columns.get(1).toString());
+                        reset.put("reset_uuid", columns.get(2).toString());
+                        reset.put("user_email", columns.get(3).toString());
+                        reset.put("location_uuid", (columns.get(4)!=null ? columns.get(4).toString() :"" ));
+                        list_reset.put(reset);
 
-			if (utils.get_config("dummy").equals("false")) {
+                    }
+                    JSONObject obj_reset = new JSONObject();
+                    obj_reset.put("reset", list_reset);
 
-				String params_query[] = {reset_uuid};
-				rows = mysql.getQuery
-						(utils.get_config("db.connstr-event"), 
-								"CALL sp_reset_read(?);", params_query);
+                    reset_list = obj_reset.toString();
+                }
+                else {
+                    reset_list = "{\"reset\": [{\"reset_id\": \"123456\",\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime\": \"2017-01-01\",\"reset_type\": \"EMAIL\",\"reset_status\": \"SENT\",\"reset_from\": \"JANIO\",\"reset_to\": \"JOSE\"},{\"reset_text\": \"HI\"}]}";
+                }
 
-				JSONArray list_reset= new JSONArray();
-				int len = rows.size();
-				for(int i = 0; i < len; i++) 
-				{
-					columns = (List<?>) rows.get(i);
-					JSONObject reset= new JSONObject();
-
-					reset.put("reset_id", columns.get(0).toString());
-					reset.put("reset_uuid", columns.get(1).toString());
-					reset.put("reset_create_datetime", columns.get(2).toString());
-					reset.put("user_uuid", columns.get(3).toString());
-					reset.put("rig_uuid", columns.get(4).toString());
-					list_reset.put(reset);
-
-				}
-				JSONObject obj_reset = new JSONObject();
-				obj_reset.put("reset", list_reset);
-				
-				reset_list = obj_reset.toString();
-			}
-			else {
-				reset_list = "{\"reset\": [{\"reset_id\": \"123456\",\"reset_uuid\": \"ASWER123UYT657\",\"reset_datetime\": \"2017-01-01\",\"reset_type\": \"EMAIL\",\"reset_status\": \"SENT\",\"reset_from\": \"JANIO\",\"reset_to\": \"JOSE\"},{\"reset_text\": \"HI\"}]}";
-			}
-
-			response = reset_list;
+                response = reset_list;
 
 		}
 		catch (Exception e){
-			e.printStackTrace();
-			response = utils.get_msg("0033", Arrays.toString(e.getStackTrace()).substring(0,300));
+                    e.printStackTrace();
+                    response = utils.get_msg("0033", Arrays.toString(e.getStackTrace()).substring(0,300));
 		}
 		finally
 		{
-			return response;
+                    return response;
 		}
 	}
 
+//        Creo q este ya no va.. 
 	@SuppressWarnings("finally")
 	public static String create(String formParams) throws JSONException {
                 
@@ -273,7 +267,7 @@ public class reset {
             }
             catch (Exception e){
                 System.err.println("Error: " + e);
-                response = utils.get_msg("0035", e.toString());
+                response = utils.get_msg("0035", e.getCause().toString());
             }
             finally {
                 return response;
@@ -319,13 +313,25 @@ public class reset {
             String reset_list = "";
             try {
                 if (utils.get_config("dummy").equals("false")) {
+                    System.out.println("uuid = " + uuid);
                     String params_query[] = {uuid};
+                    System.out.println("1");
                     rows = mysql.getQuery(utils.get_config("db.connstr-event"),"SELECT rig_reseter_number FROM xem_tbl_reset WHERE reset_uuid = ?;", params_query);
-                    columns = (List<?>) rows.get(0);
-                    JSONObject reset = new JSONObject();
-                                        
-                    reset.put("rig_reseter_number", columns.get(0)!=null ? columns.get(0).toString() : "-1");
-                    response = reset.toString();
+                    System.out.println("2");
+                    if (rows.size() != 0 ) {
+                        columns = (List<?>) rows.get(0);
+                        System.out.println("3");
+                        JSONObject reset = new JSONObject();
+                        System.out.println("4");
+
+                        reset.put("rig_reseter_number", columns.get(0)!=null ? columns.get(0).toString() : "-1");
+                        response = reset.toString();
+                        System.out.println("response = " + response);
+                    } else {
+                        JSONObject error = new JSONObject();
+                        error.put("Error", "No existe el uuid: " + uuid);
+                        response = error.toString();
+                    }
                 }
             } catch (Exception e) {
                 response = "{'Cualquier cosa' : 'prueba' }";

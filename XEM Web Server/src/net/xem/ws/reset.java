@@ -21,7 +21,6 @@ public class reset {
 	@GET
 	@Path("/")
 	public static String list(){
-	
 		String response = "";
 		response = net.xem.business.reset.list();
 		
@@ -42,6 +41,7 @@ public class reset {
 	@Path("/rig_reset/{reset_uuid}/")
 	public static String reset_rig(@PathParam("reset_uuid") String uuid){
 		String response = "";
+                System.out.println("uuid = " + uuid);
 		response = net.xem.business.reset.reset_rig(uuid);
 		
 		return response;

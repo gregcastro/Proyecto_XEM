@@ -11,8 +11,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 @Path("user")
 @Produces("application/json")
@@ -37,8 +40,9 @@ public class user {
             return response;
     }
     
+    //Este no se usa, es si se quiere agregar a traves de un JSON
     @POST 
-    @Path("/")
+    @Path("/create")
     public static String create(String formParams) throws JSONException{
         String response = "";
         response = net.xem.business.user.create(formParams);
@@ -46,6 +50,34 @@ public class user {
         return response;
     }
     
+    @POST 
+    @Path("/")
+    @Consumes("application/x-www-form-urlencoded")
+    public static Response create2(@FormParam("email") String email, @FormParam("password") String pass, @FormParam("confirm-password") String confirmPass ) throws JSONException{
+        String response = "";
+        
+        //Validar si las contrasenas coinciden
+        if( !pass.equals(confirmPass) ) {
+            JSONObject response_error = new JSONObject();
+            //Parametrizar esto
+            response_error.put("Error", "Passwords doesn't match");
+            response_error.put("Code", "put_code_here");
+//            return response_error.toString();
+        }
+        
+        JSONObject formParams = new JSONObject();
+        formParams.put("user_email", email);
+        formParams.put("user_password", pass);
+        
+        response = net.xem.business.user.create(formParams.toString());
+        return Response.ok().entity(response).header("Access-Control-Allow-Origin", "*")
+			.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+			.allow("OPTIONS").build();
+        
+        
+    }
+    
+   
     @PUT 
     @Path("/{email}/")
     public static String update(@PathParam("email") String email, String formParams) throws JSONException{
