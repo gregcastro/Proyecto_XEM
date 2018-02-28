@@ -17,7 +17,7 @@ from multiprocessing import Queue
 # Configuration variables
 seconds_between_requests = 1
 # web_server_address = 'http://192.168.0.102:8081/xem'
-web_server_address = 'http://192.168.2.41:8081'
+web_server_address = 'http://10.0.1.143:8081'
 # payload informatcion
 # user_email = "alfonsof@gmail.com"
 # rig_name = "Min02"
@@ -226,7 +226,6 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             gpu_info["rig_name"] = rig_name
             gpu_info["rig_claymore_version"] = claymore_version
 
-
             # calculate elapsed time.
             gpu_info["rig_time_up"] = "{}".format(datetime.timedelta(seconds=int(time.time() - start_time)))
 
@@ -257,10 +256,12 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             gpu_info["rig_uuid"] = rig_uuid
 
 
-            print(gpu_info)
+            # print(gpu_info)
+            print(web_server_address+'/rig')
 
             # Send request to server
             try:
+                # print(web_server_address+'/rig')
                 requests.post(web_server_address+'/rig', data=str({"gpu_info":str(gpu_info)}) )
                 # requests.post(web_server_address+'/rig', data={"gpu_info":str(gpu_info), "rig_gpu_info_eth_json":str(GPUInfoETH_json), "rig_gpu_info_second_coin_json":str(GPUInfoSecondCoin_json) })
                 # requests.post('http://192.168.2.103/xem/rig', data=gpu_info_string)
