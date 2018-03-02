@@ -24,11 +24,11 @@ public class rig {
             String rig_list = "";
 
             try {
-
+                
                     if (utils.get_config("dummy").equals("false")) {
                             String params_query[] = {};
                             rows = mysql.getQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_list();", params_query);
-
+                            
                             JSONArray list_rig = new JSONArray();
                             int len = rows.size();
                             for (int i = 0; i < len; i++) {
@@ -59,7 +59,7 @@ public class rig {
                             JSONObject obj_rig = new JSONObject();
                             obj_rig.put("rig", list_rig);
 
-                            rig_list = obj_rig.toString();
+                            rig_list = obj_rig.toString();                            
                     } else {
                             rig_list = "{\"rig\": [{\"rig_id\": \"123456\",\"rig_uuid\": \"ASWER123UYT657\",\"rig_datetime\": \"2017-01-01\",\" rig_firstname \": \"Luis\",\"rig_lastname \": \"BELLO\",\"rig_ country \": \"VENEZUELA\",\"rig_ image \": \"image.jpg\",\"rig_ phone \": \"04142723549\",\"rig_ sex \": \"M\",\"rig_ birthdate \": \"1984-21-01\"}]}";
                     }
@@ -68,7 +68,7 @@ public class rig {
 
             } catch (Exception e) {
                     e.printStackTrace();
-                    response = utils.get_msg("0032", Arrays.toString(e.getStackTrace()).substring(0, 300));
+                    response = utils.get_msg("0032", e.getCause().toString());
             } finally {
                     return response;
             }
@@ -264,8 +264,8 @@ public class rig {
                     rig_result.put("rig_gpu_second_coin", rig_gpu_second_coin);
                     rig_result.put("rig_gpu_info_second_coin", rig_gpu_info_second_coin);
                     rig_result.put("rig_start_bat_data", rig_start_bat_data);
-                    rig_result.put("location_uuid", location_uuid);
-                    rig_result.put("rig_reseter_number", rig_reseter_number);
+//                    rig_result.put("location_uuid", location_uuid);
+//                    rig_result.put("rig_reseter_number", rig_reseter_number);
 
 
                     JSONObject _rig = new JSONObject();
@@ -288,8 +288,8 @@ public class rig {
                     } else {
                         rig_reseter_number = "0";
                         String params[] = {  rig_uuid, rig_name, user_email, rig_lan_ip, rig_claymore_version, rig_time_up, rig_reset_today,
-                                        rig_claymore_reset_today, rig_gpu_info_eth, rig_gpu_second_coin, rig_gpu_info_second_coin, rig_start_bat_data, location_uuid, rig_reseter_number };
-                        mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_create(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                                        rig_claymore_reset_today, rig_gpu_info_eth, rig_gpu_second_coin, rig_gpu_info_second_coin, rig_start_bat_data };
+                        mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_create(?,?,?,?,?,?,?,?,?,?,?,?);",
                                         params);
                         JSONObject rig_result = new JSONObject();
                         rig_result.put("rig_uuid", rig_uuid);
@@ -321,20 +321,6 @@ public class rig {
                         actionObj.put("action_reset_rig", "");
                         actionObj.put("rig_uuid", rig_uuid);
                         net.xem.business.action.create(actionObj.toString());
-
-                        //Creacion de location asociada al rig_uuid
-                        JSONObject locationObj = new JSONObject();
-                        locationObj.put("location_name", "");
-                        locationObj.put("user_email", user_email);
-                        locationObj.put("rig_uuid", rig_uuid);
-                        net.xem.business.location.create(locationObj.toString());
-
-                        //Creacion de reset asociada al rig_uuid
-                        JSONObject resetObj = new JSONObject();
-                        resetObj.put("rig_reseter_number", "0");
-                        resetObj.put("user_email", user_email);
-                        resetObj.put("rig_uuid", rig_uuid);
-                        net.xem.business.reset.create(resetObj.toString());
 
                     }
                 }
@@ -417,20 +403,22 @@ public class rig {
             if (utils.get_config("dummy").equals("false")) {
                 String params[] = { uuid };
                 mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_rig_delete(?);", params);
+                
                 JSONObject rig_result = new JSONObject();
                 rig_result.put("rig_uuid", uuid);
+                
                 JSONObject rig = new JSONObject();
                 rig.put("rig", rig_result);
                 response = rig.toString();
 
                 //Delete action associated with rig
-                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_action_delete_by_rig(?);", params);
+//                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_action_delete_by_rig(?);", params);
 
                 //Delete reset associated with rig
-                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_delete(?);", params);
+//                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_reset_delete(?);", params);
 
                 //Delete location associated with rig
-                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_location_rig_delete(?);", params);
+//                mysql.execQuery(utils.get_config("db.connstr-event"), "CALL sp_location_rig_delete(?);", params);
 
             } else {
                 response = "{\"rig\": [{\"rig_uuid\": \"ASWER123UYT657\"}]}";
@@ -438,7 +426,7 @@ public class rig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response = utils.get_msg("0036", Arrays.toString(e.getStackTrace()).substring(0, 300));
+            response = utils.get_msg("0036", e.toString());
         } finally {
             return response;
         }
@@ -449,9 +437,7 @@ public class rig {
     public static String delete_by_user(String user_email) {
 
             String rig_list = read_by_user(user_email);
-            
-//            System.out.println("rig_list = " + rig_list);
-            
+                        
             JSONObject rig_list_json = new JSONObject();
             try {
                 rig_list_json = new JSONObject(rig_list);
@@ -461,22 +447,15 @@ public class rig {
                         
             try {
                 JSONArray rig_array = rig_list_json.getJSONArray("rig");
-//                System.out.println("ja_data = " + rig_array);
                 
                 int N = rig_array.length();
                 for (int i = 0; i < N; i++) {
                     //Llamo ala funcion de Delete para borrar todos los Rigs asociados y a su vez, todos los action, reset y locations asociados
                     Delete(rig_array.getJSONObject(i).getString("rig_uuid"));
-                }
-//                System.out.println(rig_array.getJSONObject(0).getString("rig_uuid"));
-                
-                
+                }  
             } catch (Exception e) {
                 System.err.println("Error al obtener JSONArray: " + e);
             }
-            
-            
-            
             return "";
             
 	}

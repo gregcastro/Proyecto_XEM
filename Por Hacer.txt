@@ -1,0 +1,9 @@
++ Crear SW que asigne una locacion a un reseter.
+
++ Crear SW que asigne una locacion a un RIG.
+
++ Crear SW que asigne un reseter_number y reset_uuid a un RIG
+
++ Crear un SW que permita toda la funcionalidad de un "Editar Perfil"
+
++ Cuando el "action_reset_rig" de la tabla "xem_tbl_action" esta en 1, se debe colocar el "rig_reseter_number" que tiene ese RIG en la tabla "rig_tbl_reset"

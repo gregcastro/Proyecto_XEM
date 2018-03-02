@@ -2,10 +2,8 @@ package net.xem.business;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import javax.ws.rs.core.MultivaluedMap;
 import net.xem.common.utils;
 import net.xem.connectors.mysql;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -169,6 +167,75 @@ public class reset {
                 return response;
             }
 	}
+        
+        @SuppressWarnings("finally")
+	public static String new_reseter(String formParams) throws JSONException {
+                
+            JSONObject objParams = null;
+            try {
+                objParams = new JSONObject(formParams);
+            } catch (JSONException ex) {
+                System.err.println("Error al convertir JSON: " + ex);
+            }
+            
+            System.out.println("objParams = " + objParams);
+            
+            String response = "";
+            List<?> rows = null;
+            List<?> columns = null;
+            JSONObject reset_result = new JSONObject();
+            JSONObject reset = new JSONObject();
+            
+            String reset_uuid, user_email;
+            if ( !objParams.getString("reset_uuid").equals("") ) {
+                //Significa que ya existe y no hago nada, solo retorno el JSON 
+                reset_uuid = objParams.getString("reset_uuid");
+                user_email = objParams.getString("user_email");
+                
+                reset_result.put("reset_uuid", reset_uuid);
+                reset_result.put("user_email", user_email);
+                
+                reset.put("reset", reset_result);				
+                response = reset.toString();
+            } else {
+                //Aqui creo el uuid nuevo y creo el registro en la tabla reset
+                try {
+                    if (utils.get_config("dummy").equals("false")) {
+                        do 
+                        {
+                            reset_uuid = java.util.UUID.randomUUID().toString();
+                            System.out.println("reset_uuid = " + reset_uuid);
+
+                            //Comprobar que este UUID no esta repetido en la tabla reset
+                            String params_query[] = {reset_uuid};
+                            rows = mysql.getQuery(utils.get_config("db.connstr-event"),"SELECT reset_uuid FROM xem_tbl_reset WHERE reset_uuid=?;", params_query);
+                        
+                        } while( rows.size() != 0 );
+                        //Aqui ya encontro un UUID que no esta repetido, se procede a guardar el nuevo registro en la tabla reset
+                        
+                        user_email = objParams.getString("user_email");
+                        
+                        String params2[] = {reset_uuid, user_email};
+                        mysql.execQuery(utils.get_config("db.connstr-event"), "INSERT INTO xem_tbl_reset (reset_create_datetime, reset_uuid, user_email) VALUES (now(),?,?) ;", params2);
+                        
+                        reset_result.put("reset_uuid", reset_uuid);
+                        reset_result.put("user_email", user_email);
+                        
+                        reset.put("reset", reset_result);				
+                        response = reset.toString();
+                    } else {
+                        response = "{'cualquier_cosa' : 'prueba' }";
+                    }
+                    
+                } catch (Exception e) {
+                    System.err.println("Error: " + e);
+                    response = utils.get_msg("0034", e.toString());
+                }  
+            }
+            
+           return response;
+
+	}
 
 	@SuppressWarnings("finally")
 	public static String update(String formParams, String rig_uuid) throws JSONException {
@@ -242,4 +309,29 @@ public class reset {
                 return response;
             }
 	}
+
+        @SuppressWarnings("finally")
+        public static String reset_rig(String uuid) {
+            String response = "";
+            List<?> rows = null;
+            List<?> columns = null;
+
+            String reset_list = "";
+            try {
+                if (utils.get_config("dummy").equals("false")) {
+                    String params_query[] = {uuid};
+                    rows = mysql.getQuery(utils.get_config("db.connstr-event"),"SELECT rig_reseter_number FROM xem_tbl_reset WHERE reset_uuid = ?;", params_query);
+                    columns = (List<?>) rows.get(0);
+                    JSONObject reset = new JSONObject();
+                                        
+                    reset.put("rig_reseter_number", columns.get(0)!=null ? columns.get(0).toString() : "-1");
+                    response = reset.toString();
+                }
+            } catch (Exception e) {
+                response = "{'Cualquier cosa' : 'prueba' }";
+            } finally {
+                return response;
+            }
+            
+        }
 }

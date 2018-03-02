@@ -37,6 +37,15 @@ public class reset {
 		
 		return response;
 	}
+        
+        @GET
+	@Path("/rig_reset/{reset_uuid}/")
+	public static String reset_rig(@PathParam("reset_uuid") String uuid){
+		String response = "";
+		response = net.xem.business.reset.reset_rig(uuid);
+		
+		return response;
+	}
 	
 	@POST 
 	@Path("/")
@@ -44,6 +53,16 @@ public class reset {
 		
 		String response = "";
 		response = net.xem.business.reset.create(formParams);
+		
+		return response;
+	}
+        
+        @POST 
+	@Path("/new_reseter/")
+	public static String new_reseter(String formParams) throws JSONException{
+                
+		String response = "";
+		response = net.xem.business.reset.new_reseter(formParams);
 		
 		return response;
 	}
