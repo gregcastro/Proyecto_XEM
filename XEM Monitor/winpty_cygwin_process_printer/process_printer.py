@@ -14,10 +14,17 @@ import os.path
 from multiprocessing import Queue
 
 
+"""
+Lectura de Claymore
+"""
+host = '10.0.1.94'
+port = 3333
+loop_seconds = 10
+
 # Configuration variables
 seconds_between_requests = 1
 # web_server_address = 'http://192.168.0.102:8081/xem'
-web_server_address = 'http://192.168.2.41:8081'
+web_server_address = 'http://10.0.1.143:8081'
 # payload informatcion
 # user_email = "alfonsof@gmail.com"
 # rig_name = "Min02"
@@ -75,10 +82,10 @@ gpu_info = {
         ]
 }
 
-
+# gpu_info = {}
 # Check Local Ip Address
 gpu_info["rig_lan_ip"] = socket.gethostbyname(socket.gethostname())
-gpu_info["rig_time_up"] = '0'
+# gpu_info["rig_time_up"] = '0'
 
 # Time Keeper
 start_time = time.time()
@@ -212,11 +219,11 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
                 claymore_version = claymore_version[claymore_version.find("=")+1: len(claymore_version)]
                 claymore_version = claymore_version.replace(" ", "")
 
-
+                """
                 print(rig_email)
                 print(rig_name)
                 print(claymore_version)
-
+                """
             else:
                 #Ver que se hace en este caso.. 
                 print("The file doesn't exits")
@@ -226,7 +233,6 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             gpu_info["rig_name"] = rig_name
             gpu_info["rig_claymore_version"] = claymore_version
 
-
             # calculate elapsed time.
             gpu_info["rig_time_up"] = "{}".format(datetime.timedelta(seconds=int(time.time() - start_time)))
 
@@ -234,8 +240,8 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             if os.path.exists("..\\rig_uuid.txt"):
                 file = open("..\\rig_uuid.txt", "r") 
                 rig_uuid = file.read()
-                # print(rig_uuid)
             else:
+                print('WHILE...')
                 while True:
                     rig_uuid = str( uuid.uuid4() )
                     r = requests.get(web_server_address+'/rig/'+rig_uuid, data={"gpu_info":str(gpu_info)})
@@ -246,10 +252,7 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
                     if 'rig_uuid' not in response:
                         break
                 
-                # Generate UUID for the RIG
-                # rig_uuid = str( uuid.uuid4() )
-
-                # # Create a File and Save the rig_uuid
+                # Create a File and Save the rig_uuid
                 file = open("..\\rig_uuid.txt","w") 
                 file.write(rig_uuid) 
                 file.close() 
@@ -257,16 +260,39 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
             gpu_info["rig_uuid"] = rig_uuid
 
 
-            print(gpu_info)
+            # print(gpu_info)
 
             # Send request to server
             try:
-                requests.post(web_server_address+'/rig', data=str({"gpu_info":str(gpu_info)}) )
-                # requests.post(web_server_address+'/rig', data={"gpu_info":str(gpu_info), "rig_gpu_info_eth_json":str(GPUInfoETH_json), "rig_gpu_info_second_coin_json":str(GPUInfoSecondCoin_json) })
-                # requests.post('http://192.168.2.103/xem/rig', data=gpu_info_string)
+                r = requests.post(web_server_address+'/rig', data=str({"gpu_info":str(gpu_info)}) )
+                
+                json_response = r.json()
+
+                print('json_response = ', json_response)
+                
+                if 'ERROR' in json_response:
+                    while True:
+                        rig_uuid = str( uuid.uuid4() )
+                        print('rig_uuid = ', rig_uuid)
+                        r = requests.get(web_server_address+'/rig/'+rig_uuid, data={"gpu_info":str(gpu_info)})
+                        
+                        response = r.json()
+                        if 'rig_uuid' not in response:
+                            break
+                    print('crear el archivo')
+                    
+                    # Create a File and Save the rig_uuid
+                    file = open("..\\rig_uuid.txt","w") 
+                    file.write(rig_uuid) 
+                    file.close() 
+
+                    gpu_info["rig_uuid"] = rig_uuid
+
             except:
                 print('ERROR POST')
                 pass
+
+
             #print information to console
             # print(gpu_info)
             # print(line)

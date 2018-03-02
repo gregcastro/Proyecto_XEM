@@ -13,60 +13,24 @@ import win32com.shell.shell as shell
 import win32event
 from win32com.client import GetObject
 
-# data JSON model (GET request)
-# {
-#   "action": {
-#     "action_change_claymore_version": false,
-#     "action_restart_claymore": false,
-#     "action_change_start_bat": false,
-#     "action_download_claymore_version": false,
-#     "action_reset_rig": false
-#   },
-#   "properties": {
-#     "rig_claymore_version": "nombre de version",
-#     "start_bat_data": "configuracion de claymore",
-#   }
-# }
-
-# target = r"C:\Users\Miner\Miners\Claymore\Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal AMD+NVIDIA GPU Miner v9.5 - Catalyst 15.12-17.x - CUDA 8.0_7.5_6.5\start.bat"
-# wDir = r"C:\Users\Miner\Miners\Claymore\Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal AMD+NVIDIA GPU Miner v9.5 - Catalyst 15.12-17.x - CUDA 8.0_7.5_6.5"
-# icon = r"C:\Users\Miner\Miners\Claymore\Claymore's Dual Ethereum+Decred_Siacoin_Lbry_Pascal AMD+NVIDIA GPU Miner v9.5 - Catalyst 15.12-17.x - CUDA 8.0_7.5_6.5\start.bat"
 target = ""
 wDir = ""
 icon = ""
 config_rig_dir = r"C:\Users\Miner\Miners\Claymore"
-# data = json.loads('{"accion": {"cambiar_version_claymore": false,"reiniciar_claymore": false,"cambiar_start_bat": false,"descargar_nueva_version_claymore": false,"resetear_RIG": false},"propiedades": {"version": "version1","start_bat_data": "-wd 1 -r 1 -epool stratum+tcp://eth-us.dwarfpool.com:8008 -ewal 0x67Eb849500f4bf5fd5ac7dD34E65Fa0f02Bd09d9/LETHI19/luisgermim@gmail.com -esm 0 -mode 0 -epsw x -allpools 1 -mport -3333 -dpool stratum+tcp://dcr.suprnova.cc:3252 -dwal luisgermim.LETHI19 -dpsw 1234 -tt -77 -ttdcr 80 -fanmin 80","IP_Reset": "192.168.0.190"}}')
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\nprocess_printer.exe -c "EthDcrMiner64.exe '
 myIP = ''
-web_server = 'http://192.168.2.41:8081'
+web_server = 'http://10.0.1.143:8081'
 
 def web_get_request_JSON():
     global data
 
     # Find rig_uuid 
     if os.path.exists(config_rig_dir + r"\rig_uuid.txt"):
-        # print("si existe el path")
         file = open(config_rig_dir + r"\rig_uuid.txt", "r") 
         rig_uuid = file.read()
-        # print(rig_uuid)
-
         r = requests.get(web_server + '/action/by_rig/' + rig_uuid)
-
-        ##################
-        print("Status Code : " + str(r.status_code))
-        # print(r.headers['content-type'])
-        # print(r.json())
-        ##################
-
-        #hacer r.content da TypeError: Can't convert 'bytes' obj to str implicitly
-        # data = json.loads(r.content)
-
-        #linea agregada por gcastro
         data = r.json()
-
-        #Print de gcastro
-        # print("data = " + str(data) + "\n")
-
+        print('data = ', data)
     else:
         print('Error: No existe el path' + wDir + r"\rig_uuid.txt")
 
@@ -82,7 +46,7 @@ def inicializar_cliente_TCP():
     global client_socket
     address = ('192.168.0.254', 8888) #Define who you are talking to (must match arduino IP and port)
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #Set Up the Socket
-    client_socket.settimeout(2) #only wait 1 second for a resonse
+    client_socket.settimeout(2) #only wait 1 second for a response
 
 def crear_acceso_directo_start_bat():
     path = os.path.join(r"C:\Users\Miner\Miners\Claymore", "start.lnk")
@@ -104,7 +68,7 @@ def reiniciar_claymore():
     iniciar_claymore()
 
 def request_reiniciar_claymore():
-    if data['action']['action_restart_claymore'] == "1":
+    if 'action' in data and data['action']['action_restart_claymore'] == "1":
         reiniciar_claymore()
         data['action']['action_restart_claymore'] = "0"
 
@@ -112,7 +76,7 @@ def cambiar_version_claymore():
     global target
     global wDir
     global icon
-    if data['action']['action_change_claymore_version'] == "1":
+    if 'action' in data and data['action']['action_change_claymore_version'] == "1":
         # Creo que aqui es donde deberia preguntar primero si el path nuevo existe o no.
 
         if os.path.exists("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version']):
@@ -135,22 +99,25 @@ def cambiar_version_claymore():
             print("No existe el path")
 
 def cambiar_start_bat():
-    if data['action']['action_change_start_bat'] == "1":
+    if 'action' in data and data['action']['action_change_start_bat'] == "1":
         if os.path.exists(wDir):
-            print("aqui estoy, voy a sobreescribir star_bat")
+            # print("aqui estoy, voy a sobreescribir star_bat")
+            # Abro el archivo .start.bat del claymore
             with open(target,'w') as f:
-            # with open(r"C:\Users\Miner\Miners\Claymore\start.txt",'w') as f:
+                # Escribo la nueva configuracion del startbat enviado desde el WS
                 f.write(windows_config + data['properties']['start_bat_data'] + '"')
             f.closed
+            # limpio los accesos directors para estar seguro
             crear_acceso_directo_start_bat()
             reiniciar_claymore()
+            # seteo el action en ceero para que no vuelva a entrar en el ciclo de configuracion del start bat
             data['action']['action_change_start_bat'] = "0"
         else:
             print("El directorio no existe")
 
 def descargar_nueva_version_claymore():
     # if data['accion']['descargar_nueva_version_claymore'] == True:
-    if data['action']['action_download_claymore_version'] == "1":
+    if 'action' in data and data['action']['action_download_claymore_version'] == "1":
         zipurl = web_server + "/data/Claymore.zip"
         # with urlopen(zipurl) as zipresp:
 
@@ -184,17 +151,9 @@ def descargar_nueva_version_claymore():
         #reiniciar_claymore()
         data['action']['action_download_claymore_version'] = "0"
 
-#Borrar... este es reset_rig()
-# def resetear_RIG():
-#     global client_socket
-#     if data['accion']['resetear_RIG'] == True and data['propiedades']['IP_Reset'] == myIP:
-#         client_socket.sendto(bytes("1", "utf-8"), address)
-#         print("Paquete enviado")
-#         data['accion']['resetear_RIG'] = False
-
 def reset_rig():
     global client_socket
-    if data['action']['action_reset_rig'] == "1":
+    if 'action' in data and data['action']['action_reset_rig'] == "1":
         client_socket.sendto(bytes("1", "utf-8"), address)
         print("Paquete enviado")
         data['action']['action_reset_rig'] = "0"
@@ -247,7 +206,7 @@ def main():
             cambiar_start_bat()
             cambiar_version_claymore()
             request_reiniciar_claymore()
+            # Revisar si esta accion hace falta por que creemos que la accion de reiniciar RIG es directamente desde el WS al Arduino
             reset_rig()
-
             # resetear_RIG()
 main()
