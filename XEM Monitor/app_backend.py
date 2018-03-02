@@ -16,8 +16,9 @@ from win32com.client import GetObject
 target = ""
 wDir = ""
 icon = ""
+ClaymoreReaderPath = ""
 config_rig_dir = r"C:\Users\Miner\Miners\Claymore"
-windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\nprocess_printer.exe -c "EthDcrMiner64.exe '
+windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\n EthDcrMiner64.exe '
 myIP = ''
 web_server = 'http://10.0.1.143:8081'
 
@@ -59,6 +60,15 @@ def crear_acceso_directo_start_bat():
 
 def iniciar_claymore():
     se_ret = shell.ShellExecuteEx(fMask=0x140, lpFile=r"C:\Users\Miner\Miners\Claymore\start.lnk", nShow=1)
+    print('\n########################################\n')
+
+    print( ClaymoreReaderPath )
+
+    print('\n########################################\n')
+
+    se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=1)
+    # print(target)
+    # print(wDir)
     time.sleep(5) #Esperar a que inicie el claymore
 
 def reiniciar_claymore():
@@ -83,11 +93,13 @@ def cambiar_version_claymore():
             target = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat"
             wDir = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version']
             icon = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat"
+            ClaymoreReaderPath = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe"
 
             file = open(config_rig_dir + r"\dir_info.txt","w") 
             file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
             file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\n") 
             file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
+            file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe" + "\n") 
             file.close() 
 
 
@@ -105,7 +117,8 @@ def cambiar_start_bat():
             # Abro el archivo .start.bat del claymore
             with open(target,'w') as f:
                 # Escribo la nueva configuracion del startbat enviado desde el WS
-                f.write(windows_config + data['properties']['start_bat_data'] + '"')
+                # f.write(windows_config + data['properties']['start_bat_data'] + '"')
+                f.write(windows_config + data['properties']['start_bat_data'])
             f.closed
             # limpio los accesos directors para estar seguro
             crear_acceso_directo_start_bat()
@@ -167,6 +180,7 @@ def setup_winpty_cygwin_process_printer():
         full_directory_name = os.path.join(dest, directory_name)
         for file_name in src_files:
             full_file_name = os.path.join(src, file_name)
+
             if os.path.isfile(full_file_name) and os.path.isdir(full_directory_name):
                 shutil.copy(full_file_name, full_directory_name)
 
@@ -174,6 +188,7 @@ def setup_dir():
     global target
     global wDir
     global icon
+    global ClaymoreReaderPath
 
 
     if os.path.exists(config_rig_dir + r"\dir_info.txt"):
@@ -182,6 +197,7 @@ def setup_dir():
         target = lines[0]
         wDir = lines[1]
         icon = lines[2]
+        ClaymoreReaderPath = lines[3]
 
     file.close() 
 

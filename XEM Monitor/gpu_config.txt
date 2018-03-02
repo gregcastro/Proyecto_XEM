@@ -1,0 +1,3 @@
+user_email = alfonsof@gmail.com
+rig_name = Min02
+claymore_version = 9.5
