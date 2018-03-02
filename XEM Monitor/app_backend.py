@@ -30,6 +30,7 @@ def web_get_request_JSON():
         rig_uuid = file.read()
         r = requests.get(web_server + '/action/by_rig/' + rig_uuid)
         data = r.json()
+        print('data = ', data)
     else:
         print('Error: No existe el path' + wDir + r"\rig_uuid.txt")
 
@@ -67,7 +68,7 @@ def reiniciar_claymore():
     iniciar_claymore()
 
 def request_reiniciar_claymore():
-    if data['action']['action_restart_claymore'] == "1":
+    if 'action' in data and data['action']['action_restart_claymore'] == "1":
         reiniciar_claymore()
         data['action']['action_restart_claymore'] = "0"
 
@@ -75,7 +76,7 @@ def cambiar_version_claymore():
     global target
     global wDir
     global icon
-    if data['action']['action_change_claymore_version'] == "1":
+    if 'action' in data and data['action']['action_change_claymore_version'] == "1":
         # Creo que aqui es donde deberia preguntar primero si el path nuevo existe o no.
 
         if os.path.exists("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version']):
@@ -98,9 +99,9 @@ def cambiar_version_claymore():
             print("No existe el path")
 
 def cambiar_start_bat():
-    if data['action']['action_change_start_bat'] == "1":
+    if 'action' in data and data['action']['action_change_start_bat'] == "1":
         if os.path.exists(wDir):
-            print("aqui estoy, voy a sobreescribir star_bat")
+            # print("aqui estoy, voy a sobreescribir star_bat")
             # Abro el archivo .start.bat del claymore
             with open(target,'w') as f:
                 # Escribo la nueva configuracion del startbat enviado desde el WS
@@ -116,7 +117,7 @@ def cambiar_start_bat():
 
 def descargar_nueva_version_claymore():
     # if data['accion']['descargar_nueva_version_claymore'] == True:
-    if data['action']['action_download_claymore_version'] == "1":
+    if 'action' in data and data['action']['action_download_claymore_version'] == "1":
         zipurl = web_server + "/data/Claymore.zip"
         # with urlopen(zipurl) as zipresp:
 
@@ -152,7 +153,7 @@ def descargar_nueva_version_claymore():
 
 def reset_rig():
     global client_socket
-    if data['action']['action_reset_rig'] == "1":
+    if 'action' in data and data['action']['action_reset_rig'] == "1":
         client_socket.sendto(bytes("1", "utf-8"), address)
         print("Paquete enviado")
         data['action']['action_reset_rig'] = "0"
