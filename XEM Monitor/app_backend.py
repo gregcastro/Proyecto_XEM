@@ -15,7 +15,6 @@ from win32com.client import GetObject
 
 target = ""
 wDir = ""
-icon = ""
 ClaymoreReaderPath = ""
 config_rig_dir = r"C:\Users\Miner\Miners\Claymore"
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\n EthDcrMiner64.exe '
@@ -33,14 +32,13 @@ def web_get_request_JSON():
         data = r.json()
         print('data = ', data)
     else:
-        print('Error: No existe el path' + wDir + r"\rig_uuid.txt")
+        print('Error: No existe el path' + config_rig_dir + r"\rig_uuid.txt")
 
 def obtener_myIP():
     global myIP
     hostname = socket.gethostname()
     myIP = socket.gethostbyname(hostname)
-    print("Mi direccion IP es: ")
-    print(myIP)
+    print("Mi direccion IP es: ", myIP)
 
 def inicializar_cliente_TCP():
     global address
@@ -55,21 +53,13 @@ def crear_acceso_directo_start_bat():
     shortcut = shell.CreateShortCut(path)
     shortcut.Targetpath = target
     shortcut.WorkingDirectory = wDir
-    shortcut.IconLocation = icon
+    shortcut.IconLocation = target
     shortcut.save()
 
 def iniciar_claymore():
     se_ret = shell.ShellExecuteEx(fMask=0x140, lpFile=r"C:\Users\Miner\Miners\Claymore\start.lnk", nShow=1)
-    print('\n########################################\n')
-
-    print( ClaymoreReaderPath )
-
-    print('\n########################################\n')
-
-    se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=0)
-    # print(target)
-    # print(wDir)
     time.sleep(5) #Esperar a que inicie el claymore
+    se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=1)
 
 def reiniciar_claymore():
     os.system("TASKKILL /F /T /IM cmd.exe")
@@ -85,21 +75,19 @@ def request_reiniciar_claymore():
 def cambiar_version_claymore():
     global target
     global wDir
-    global icon
     if 'action' in data and data['action']['action_change_claymore_version'] == "1":
         # Creo que aqui es donde deberia preguntar primero si el path nuevo existe o no.
 
         if os.path.exists("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version']):
-            target = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat"
-            wDir = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version']
-            icon = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat"
-            ClaymoreReaderPath = "C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe"
+            target = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat"
+            wDir = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version']
+            ClaymoreReaderPath = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe"
 
             file = open(config_rig_dir + r"\dir_info.txt","w") 
-            file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
-            file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\n") 
-            file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
-            file.write("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe" + "\n") 
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\n") 
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe" + "\n") 
             file.close() 
 
 
@@ -129,10 +117,8 @@ def cambiar_start_bat():
             print("El directorio no existe")
 
 def descargar_nueva_version_claymore():
-    # if data['accion']['descargar_nueva_version_claymore'] == True:
     if 'action' in data and data['action']['action_download_claymore_version'] == "1":
         zipurl = web_server + "/data/Claymore.zip"
-        # with urlopen(zipurl) as zipresp:
 
         filename = "Claymore.zip"
         dest = r"C:\\Users\\Miner\\Miners\\Claymore\\" + filename
@@ -151,14 +137,13 @@ def descargar_nueva_version_claymore():
             zipfile.extractall(r"C:\\Users\\Miner\\Miners\\Claymore")
         zipfile.close()
         
-        # Save the files of the "winpty_cygwin_process_printer" directory
+        # Save the claymoreReader directory
         # on all the new directories extracted 
-        setup_winpty_cygwin_process_printer()
+        setup_claymore_reader()
 
         # # Change the new dir paths
         # target = dest + "\\start.bat"
         # wDir = dest
-        # icon = dest + "\\start.bat"
 
         #crear_acceso_directo_start_bat()
         #reiniciar_claymore()
@@ -171,10 +156,11 @@ def reset_rig():
         print("Paquete enviado")
         data['action']['action_reset_rig'] = "0"
 
-def setup_winpty_cygwin_process_printer():
+def setup_claymore_reader():
     dest = r"C:\\Users\\Miner\\Miners\\Claymore"
     dest_directories = os.listdir(dest)
-    src = os.path.dirname(os.path.realpath(__file__)) + r"\winpty_cygwin_process_printer"
+
+    src = os.path.dirname(os.path.realpath(__file__)) + r"\ClaymoreReader"
     src_files = os.listdir(src)
     for directory_name in dest_directories:
         full_directory_name = os.path.join(dest, directory_name)
@@ -187,7 +173,6 @@ def setup_winpty_cygwin_process_printer():
 def setup_dir():
     global target
     global wDir
-    global icon
     global ClaymoreReaderPath
 
 
@@ -196,13 +181,12 @@ def setup_dir():
         lines = file.readlines()
         target = lines[0]
         wDir = lines[1]
-        icon = lines[2]
-        ClaymoreReaderPath = lines[3]
+        ClaymoreReaderPath = lines[2]
 
     file.close() 
 
 def main():
-    setup_winpty_cygwin_process_printer()
+    setup_claymore_reader()
     setup_dir()
     obtener_myIP()
     inicializar_cliente_TCP()
@@ -214,7 +198,7 @@ def main():
             time.sleep(2)
         except:
             print('ERROR GET')
-            time.sleep(2) # Reintentar en 1 segundo
+            time.sleep(2) # Reintentar en 2 segundos
             pass
         else:
             print("...\n\n\n")
