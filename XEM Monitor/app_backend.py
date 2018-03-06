@@ -20,7 +20,7 @@ ClaymoreReaderPath = ""
 config_rig_dir = r"C:\Users\Miner\Miners\Claymore"
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\n EthDcrMiner64.exe '
 myIP = ''
-web_server = 'http://10.0.1.143:8081'
+web_server = 'http://10.0.1.206:8081/xem'
 
 def web_get_request_JSON():
     global data
@@ -66,7 +66,7 @@ def iniciar_claymore():
 
     print('\n########################################\n')
 
-    se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=1)
+    se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=0)
     # print(target)
     # print(wDir)
     time.sleep(5) #Esperar a que inicie el claymore

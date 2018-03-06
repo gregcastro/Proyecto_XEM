@@ -43,10 +43,14 @@ def main():
 
 	print(gpu_info["rig_lan_ip"])
 
+
+
 	# check if 10 seconds have passed since last sent request
     # if time.time() - tick_time > seconds_between_requests:
         # Send request
 
+
+	
 	while True:
 
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
