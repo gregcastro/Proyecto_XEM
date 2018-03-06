@@ -13,8 +13,8 @@ Lectura de Claymore
 host = 'localhost'
 port = 3333
 loop_seconds = 10
-
-web_server_address = 'http://10.0.1.206:8081/xem'
+config_rig_dir = r"C:\Claymore"
+web_server_address = 'http://10.0.1.143:8081'
 
 gpu_info = {}
 
@@ -55,15 +55,12 @@ def main():
 			s.connect((host, port))
 			print("connected")
 			s.send('{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}'.encode("utf-8"))
-			j=s.recv(2048)
+			j = s.recv(2048)
 			s.close()                                                                                                                                      
-			resp=json.loads(j.decode("utf-8"))
-			resp=resp['result']
+			resp = json.loads(j.decode("utf-8"))
+			resp = resp['result']
 			print('resp = ', resp)
 			muchos()
-
-			# hashes = int(resp[2].split(';')[0])
-			# print("m/h=" + str(hashes))
 
 			get_miner_data()
 
@@ -71,7 +68,6 @@ def main():
 			gpu_info["rig_email"] = user_email
 			gpu_info["rig_name"] = rig_name
 			gpu_info["rig_claymore_version"] = resp[0].split(' - ')[0]
-
 
 			# calculate elapsed time.
 			# gpu_info["rig_time_up"] = "{}".format(datetime.timedelta(seconds=int(time.time() - start_time)))
@@ -107,8 +103,6 @@ def main():
 				aux['Model'] = None
 				rig_gpu_info_eth.append(aux)
 
-			# print('rig_gpu_info_eth = ', rig_gpu_info_eth)
-
 			gpu_info['rig_gpu_info_eth'] = rig_gpu_info_eth
 
 
@@ -128,14 +122,12 @@ def main():
 				gpu_info['rig_gpu_info_second_coin'] = rig_mhs_second_coin
 
 
-			print('########################')
+			print('\n########################\n')
 			print('GPU_INFO = ', gpu_info)
-			print('########################')
+			print('\n########################\n')
 
+			# Llamada al Metodo POST con la informacion del RIG
 			post_process()
-
-
-				# {"Mhs":"None", "Temp":"None", "Fan":"None","Model":"None"},
 
 		except TimeoutError:
 			print("connection timeout")
@@ -152,8 +144,8 @@ def main():
 
 def read_miner_uuid():
 	# If the rig_uuid exists then a use it. If isn't, I create it 
-	if os.path.exists("..\\rig_uuid.txt"):
-		file = open("..\\rig_uuid.txt", "r") 
+	if os.path.exists(config_rig_dir+r"\\rig_uuid.txt"):
+		file = open(config_rig_dir+r"\\rig_uuid.txt", "r") 
 		rig_uuid = file.read()
 	else:
 		while True:
@@ -165,12 +157,11 @@ def read_miner_uuid():
 				break
 
 		# Create a File and Save the rig_uuid
-		file = open("..\\rig_uuid.txt","w") 
+		file = open(config_rig_dir+r"\\rig_uuid.txt","w") 
 		file.write(rig_uuid) 
 		file.close()
 
 	return rig_uuid
-
 
 def get_miner_data():
 	global user_email
@@ -178,8 +169,8 @@ def get_miner_data():
 	global claymore_version
 
  	# Prueba leer linea por linea gpu_info_config.txt
-	if os.path.exists("..\\gpu_config.txt"):
-		file = open("..\\gpu_config.txt", "r") 
+	if os.path.exists(config_rig_dir+r"\\gpu_config.txt"):
+		file = open(config_rig_dir+r"\\gpu_config.txt", "r") 
 		user_email = file.readline()
 
 		user_email = user_email[user_email.find("=")+1: len(user_email)]
@@ -207,23 +198,6 @@ def post_process():
 
 		print('json_response = ', json_response)
 
-		# if 'ERROR' in json_response:
-		# 	while True:
-		# 		rig_uuid = str( uuid.uuid4() )
-		# 		print('rig_uuid = ', rig_uuid)
-		# 		r = requests.get(web_server_address+'/rig/'+rig_uuid, data={"gpu_info":str(gpu_info)})
-
-		# 		response = r.json()
-		# 		if 'rig_uuid' not in response:
-		# 			break
-		# 	print('crear el archivo')
-
-		# 	# Create a File and Save the rig_uuid
-		# 	file = open("..\\rig_uuid.txt","w") 
-		# 	file.write(rig_uuid) 
-		# 	file.close() 
-
-		# 	gpu_info["rig_uuid"] = rig_uuid
 	except:
 		print('ERROR POST')
 		pass

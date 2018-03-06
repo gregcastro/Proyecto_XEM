@@ -16,10 +16,11 @@ from win32com.client import GetObject
 target = ""
 wDir = ""
 ClaymoreReaderPath = ""
-config_rig_dir = r"C:\Users\Miner\Miners\Claymore"
+config_rig_dir = r"C:\Claymore"
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\n EthDcrMiner64.exe '
 myIP = ''
-web_server = 'http://10.0.1.206:8081/xem'
+data = {}
+web_server = 'http://10.0.1.143:8081'
 
 def web_get_request_JSON():
     global data
@@ -48,7 +49,7 @@ def inicializar_cliente_TCP():
     client_socket.settimeout(2) #only wait 1 second for a response
 
 def crear_acceso_directo_start_bat():
-    path = os.path.join(r"C:\Users\Miner\Miners\Claymore", "start.lnk")
+    path = os.path.join(config_rig_dir, "start.lnk")
     shell = Dispatch('WScript.Shell')
     shortcut = shell.CreateShortCut(path)
     shortcut.Targetpath = target
@@ -57,7 +58,7 @@ def crear_acceso_directo_start_bat():
     shortcut.save()
 
 def iniciar_claymore():
-    se_ret = shell.ShellExecuteEx(fMask=0x140, lpFile=r"C:\Users\Miner\Miners\Claymore\start.lnk", nShow=1)
+    se_ret = shell.ShellExecuteEx(fMask=0x140, lpFile=config_rig_dir+r"\start.lnk", nShow=1)
     time.sleep(5) #Esperar a que inicie el claymore
     se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=1)
 
@@ -78,7 +79,7 @@ def cambiar_version_claymore():
     if 'action' in data and data['action']['action_change_claymore_version'] == "1":
         # Creo que aqui es donde deberia preguntar primero si el path nuevo existe o no.
 
-        if os.path.exists("C:\\Users\\Miner\\Miners\\Claymore\\" + "Claymore v" + data['properties']['rig_claymore_version']):
+        if os.path.exists(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version']):
             target = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat"
             wDir = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version']
             ClaymoreReaderPath = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe"
@@ -121,7 +122,8 @@ def descargar_nueva_version_claymore():
         zipurl = web_server + "/data/Claymore.zip"
 
         filename = "Claymore.zip"
-        dest = r"C:\\Users\\Miner\\Miners\\Claymore\\" + filename
+        # dest = r"C:\\Users\\Miner\\Miners\\Claymore\\" + filename
+        dest = config_rig_dir + r'\\' + filename
 
         # Getting the zip file in the server
         response = urlopen(zipurl)
@@ -134,7 +136,8 @@ def descargar_nueva_version_claymore():
 
         # Extract the files 
         with ZipFile(dest) as zipfile:
-            zipfile.extractall(r"C:\\Users\\Miner\\Miners\\Claymore")
+            # zipfile.extractall(r"C:\\Users\\Miner\\Miners\\Claymore")
+            zipfile.extractall(config_rig_dir)
         zipfile.close()
         
         # Save the claymoreReader directory
@@ -157,7 +160,8 @@ def reset_rig():
         data['action']['action_reset_rig'] = "0"
 
 def setup_claymore_reader():
-    dest = r"C:\\Users\\Miner\\Miners\\Claymore"
+    # dest = r"C:\\Users\\Miner\\Miners\\Claymore"
+    dest = config_rig_dir
     dest_directories = os.listdir(dest)
 
     src = os.path.dirname(os.path.realpath(__file__)) + r"\ClaymoreReader"
@@ -188,6 +192,7 @@ def setup_dir():
 def main():
     setup_claymore_reader()
     setup_dir()
+    crear_acceso_directo_start_bat()
     obtener_myIP()
     inicializar_cliente_TCP()
     iniciar_claymore()
