@@ -25,11 +25,11 @@ web_server = 'http://10.0.1.143:8081'
 def web_get_request_JSON():
     global data
 
-    # Find rig_uuid 
+    # Find rig_uuid
     if os.path.exists(config_rig_dir + r"\rig_uuid.txt"):
-        file = open(config_rig_dir + r"\rig_uuid.txt", "r") 
+        file = open(config_rig_dir + r"\rig_uuid.txt", "r")
         rig_uuid = file.read()
-        r = requests.get(web_server + '/action/by_rig/' + rig_uuid)
+        r = requests.get(web_server + '/action/by_rig/' + rig_uuid +'/status=True')
         data = r.json()
         print('data = ', data)
     else:
@@ -71,7 +71,7 @@ def reiniciar_claymore():
 def request_reiniciar_claymore():
     if 'action' in data and data['action']['action_restart_claymore'] == "1":
         reiniciar_claymore()
-        data['action']['action_restart_claymore'] = "0"
+        data['action']['status'] = False
 
 def cambiar_version_claymore():
     global target
@@ -84,18 +84,18 @@ def cambiar_version_claymore():
             wDir = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version']
             ClaymoreReaderPath = config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe"
 
-            file = open(config_rig_dir + r"\dir_info.txt","w") 
-            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
-            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\n") 
-            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n") 
-            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe" + "\n") 
-            file.close() 
+            file = open(config_rig_dir + r"\dir_info.txt","w")
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n")
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\n")
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\start.bat" + "\n")
+            file.write(config_rig_dir + r"\Claymore v" + data['properties']['rig_claymore_version'] + "\\ClaymoreReader.exe" + "\n")
+            file.close()
 
 
             if os.path.exists(wDir):
                 crear_acceso_directo_start_bat()
                 reiniciar_claymore()
-            data['action']['action_change_claymore_version'] = "0"
+            data['action']['status'] = False
         else:
             print("No existe el path")
 
@@ -113,7 +113,7 @@ def cambiar_start_bat():
             crear_acceso_directo_start_bat()
             reiniciar_claymore()
             # seteo el action en ceero para que no vuelva a entrar en el ciclo de configuracion del start bat
-            data['action']['action_change_start_bat'] = "0"
+            data['action']['status'] = False
         else:
             print("El directorio no existe")
 
@@ -127,21 +127,21 @@ def descargar_nueva_version_claymore():
 
         # Getting the zip file in the server
         response = urlopen(zipurl)
-        
+
         # Read the bytes of the zip file and create the zipfile in my pc
         zipcontent = response.read()
         with open(dest, 'wb') as f:
             f.write(zipcontent)
         f.close()
 
-        # Extract the files 
+        # Extract the files
         with ZipFile(dest) as zipfile:
             # zipfile.extractall(r"C:\\Users\\Miner\\Miners\\Claymore")
             zipfile.extractall(config_rig_dir)
         zipfile.close()
-        
+
         # Save the claymoreReader directory
-        # on all the new directories extracted 
+        # on all the new directories extracted
         setup_claymore_reader()
 
         # # Change the new dir paths
@@ -150,14 +150,14 @@ def descargar_nueva_version_claymore():
 
         #crear_acceso_directo_start_bat()
         #reiniciar_claymore()
-        data['action']['action_download_claymore_version'] = "0"
+        data['action']['status'] = False
 
 def reset_rig():
     global client_socket
     if 'action' in data and data['action']['action_reset_rig'] == "1":
         client_socket.sendto(bytes("1", "utf-8"), address)
         print("Paquete enviado")
-        data['action']['action_reset_rig'] = "0"
+        data['action']['status'] = False
 
 def setup_claymore_reader():
     # dest = r"C:\\Users\\Miner\\Miners\\Claymore"
@@ -181,13 +181,13 @@ def setup_dir():
 
 
     if os.path.exists(config_rig_dir + r"\dir_info.txt"):
-        file = open(config_rig_dir + r"\dir_info.txt", "r") 
+        file = open(config_rig_dir + r"\dir_info.txt", "r")
         lines = file.readlines()
         target = lines[0]
         wDir = lines[1]
         ClaymoreReaderPath = lines[2]
 
-    file.close() 
+    file.close()
 
 def main():
     setup_claymore_reader()
