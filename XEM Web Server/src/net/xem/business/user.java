@@ -2,6 +2,8 @@ package net.xem.business;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.xem.common.utils;
 import net.xem.connectors.mysql;
 import org.json.JSONArray;
@@ -125,6 +127,15 @@ public class user {
         String user_email = objParams.getString("user_email");
         
         //Validar si el user_email ya existe
+//        List<?> rows = null;
+//        List<?> columns = null;
+//        String params_query[] = {};
+//        try {
+//            rows = mysql.getQuery(utils.get_config("db.connstr-event"), "SELECT ;", params_query);
+//        } catch (Exception ex) {
+//            System.err.println("Error: " + ex);
+//            response = utils.get_msg("put_code_here", ex.toString());
+//        }
 
         //Deberia llegar hasheada desde el front pero mientras tanto le hare md5 aqui
         String user_password = objParams.getString("user_password");

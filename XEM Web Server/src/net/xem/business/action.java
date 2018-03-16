@@ -225,7 +225,7 @@ public class action {
                 String action_change_start_bat = Integer.toString(objParams.getInt("action_change_start_bat"));
                 String action_download_claymore_version = Integer.toString(objParams.getInt("action_download_claymore_version"));
                 String action_restart_claymore = Integer.toString(objParams.getInt("action_restart_claymore"));
-                String action_reset_rig = null;
+                String action_reset_rig = "0";
 		String rig_uuid = objParams.getString("rig_uuid").replaceAll("\\[|\\]", "");
 	
 		try{
