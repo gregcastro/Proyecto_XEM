@@ -14,13 +14,6 @@ import os.path
 from multiprocessing import Queue
 
 
-"""
-Lectura de Claymore
-"""
-host = '10.0.1.94'
-port = 3333
-loop_seconds = 10
-
 # Configuration variables
 seconds_between_requests = 1
 # web_server_address = 'http://192.168.0.102:8081/xem'
@@ -269,7 +262,7 @@ with Popen(r"winpty.exe -Xallow-non-tty -Xplain ./" + options.command, stdout=PI
                 json_response = r.json()
 
                 print('json_response = ', json_response)
-                
+
                 if 'ERROR' in json_response:
                     while True:
                         rig_uuid = str( uuid.uuid4() )
