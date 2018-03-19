@@ -1,10 +1,11 @@
 from django.db import models
 from django.utils import timezone
 import uuid
+import datetime
 
 # Create your models here.
 class Rig(models.Model):
-    rig_uuid = models.UUIDField()
+    rig_uuid = models.UUIDField(unique=True)
     rig_created_date = models.DateTimeField(default=timezone.now)
     rig_name = models.CharField(max_length=50, null=True, default=None)
     rig_email = models.CharField(max_length=50, null=True, default=None)
@@ -20,6 +21,7 @@ class Rig(models.Model):
     location_uuid = models.CharField(max_length=50, null=True, default=None)
     rig_reseter_number = models.IntegerField(null=True, default=None)
     reset_uuid = models.CharField(max_length=1000, null=True, default=None)
+    rig_last_connection = models.CharField(max_length=50, default=str( datetime.datetime.utcnow().timestamp()) )
 
     class Meta:
         db_table = 'Rig'
