@@ -21,6 +21,8 @@ class RigListCreateApiView(ListCreateAPIView):
             #DATOS COMO RESETTER UUID, LOCATION UUID, OJO SON DATOS QUE NO ENVIA EL RIG
 
             obj = Rig.objects.get(rig_uuid=serializer.validated_data['rig_uuid'], rig_lan_ip=serializer.validated_data['rig_lan_ip'])
+            print(obj)
+            print('\n###############################')
             for key, value in defaults.items():
                 setattr(obj, key, value)
             obj.save()
