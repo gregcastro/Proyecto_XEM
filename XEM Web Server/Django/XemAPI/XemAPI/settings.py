@@ -25,7 +25,7 @@ SECRET_KEY = 'hcq=ugy-#*vmysc1+m^5+hvju*^-fpf*ys8wz7x36(1urekn+w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.0.1.206','localhost', '127.0.0.1']
 
 
 # Application definition
@@ -134,8 +134,9 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.AllowAny'
     ]
 }
 
 AUTH_USER_MODEL = 'User.User'
+USE_TZ = True

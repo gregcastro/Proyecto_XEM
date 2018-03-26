@@ -15,14 +15,17 @@ class RigListCreateApiView(ListCreateAPIView):
         defaults = serializer.data
         defaults['rig_last_connection'] = datetime.datetime.utcnow().timestamp()
 
+
+        print(serializer.data['rig_gpu_info_eth'])
+
         try:
             #OJO, DEL RIG, EN EL APPBACKEND SE ENVIAN ALGUNOS DATOS EN NULL O SIMPLEMENTE NO SE ENVIAN
             #ENTONCES CREO QUE DEBEMOS USAR OTRO SERIALIZARZER,YA QUE CON ESTA ESTRUCTURA, VOY A BORRAR
             #DATOS COMO RESETTER UUID, LOCATION UUID, OJO SON DATOS QUE NO ENVIA EL RIG
 
             obj = Rig.objects.get(rig_uuid=serializer.validated_data['rig_uuid'], rig_lan_ip=serializer.validated_data['rig_lan_ip'])
-            print(obj)
-            print('\n###############################')
+            # print(obj)
+            # print('\n###############################')
             for key, value in defaults.items():
                 setattr(obj, key, value)
             obj.save()

@@ -20,7 +20,7 @@ config_rig_dir = r"C:\Claymore"
 windows_config = 'setx GPU_FORCE_64BIT_PTR 0\nsetx GPU_MAX_HEAP_SIZE 100\nsetx GPU_USE_SYNC_OBJECTS 1\nsetx GPU_MAX_ALLOC_PERCENT 100\nsetx GPU_SINGLE_ALLOC_PERCENT 100\ntimeout /t 20\n EthDcrMiner64.exe '
 myIP = ''
 data = {}
-web_server = 'http://10.0.1.143:8081'
+web_server = 'http://10.0.1.206:8000'
 
 def web_get_request_JSON():
     global data
@@ -29,7 +29,7 @@ def web_get_request_JSON():
     if os.path.exists(config_rig_dir + r"\rig_uuid.txt"):
         file = open(config_rig_dir + r"\rig_uuid.txt", "r")
         rig_uuid = file.read()
-        r = requests.get(web_server + '/action/by_rig/' + rig_uuid +'/status=True')
+        r = requests.get(web_server + '/action/by_rig/' + rig_uuid)
         data = r.json()
         print('data = ', data)
     else:
@@ -58,9 +58,9 @@ def crear_acceso_directo_start_bat():
     shortcut.save()
 
 def iniciar_claymore():
-    se_ret = shell.ShellExecuteEx(fMask=0x140, lpFile=config_rig_dir+r"\start.lnk", nShow=1)
+    se_ret = shell.ShellExecuteEx(fMask=0x140, lpFile=config_rig_dir+r"\start.lnk", nShow=0)
     time.sleep(5) #Esperar a que inicie el claymore
-    se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=1)
+    se_ret2 = shell.ShellExecuteEx(fMask=0x140, lpFile=ClaymoreReaderPath, nShow=0)
 
 def reiniciar_claymore():
     os.system("TASKKILL /F /T /IM cmd.exe")
@@ -71,7 +71,7 @@ def reiniciar_claymore():
 def request_reiniciar_claymore():
     if 'action' in data and data['action']['action_restart_claymore'] == "1":
         reiniciar_claymore()
-        data['action']['status'] = False
+        data['action']['action_restart_claymore'] = "0"
 
 def cambiar_version_claymore():
     global target
@@ -95,7 +95,7 @@ def cambiar_version_claymore():
             if os.path.exists(wDir):
                 crear_acceso_directo_start_bat()
                 reiniciar_claymore()
-            data['action']['status'] = False
+            data['action']['action_change_claymore_version'] = "0"
         else:
             print("No existe el path")
 
@@ -113,7 +113,7 @@ def cambiar_start_bat():
             crear_acceso_directo_start_bat()
             reiniciar_claymore()
             # seteo el action en ceero para que no vuelva a entrar en el ciclo de configuracion del start bat
-            data['action']['status'] = False
+            data['action']['action_change_start_bat'] = "0"
         else:
             print("El directorio no existe")
 
@@ -150,14 +150,14 @@ def descargar_nueva_version_claymore():
 
         #crear_acceso_directo_start_bat()
         #reiniciar_claymore()
-        data['action']['status'] = False
+        data['action']['action_download_claymore_version'] = "0"
 
 def reset_rig():
     global client_socket
     if 'action' in data and data['action']['action_reset_rig'] == "1":
         client_socket.sendto(bytes("1", "utf-8"), address)
         print("Paquete enviado")
-        data['action']['status'] = False
+        data['action']['action_reset_rig'] = "0"
 
 def setup_claymore_reader():
     # dest = r"C:\\Users\\Miner\\Miners\\Claymore"
